@@ -30,7 +30,7 @@ namespace BattleSiteE
             graphics.PreferredBackBufferHeight = 720;
             
             //graphics.SynchronizeWithVerticalRetrace = false;
-            //IsFixedTimeStep = false;
+            IsFixedTimeStep = false;
 
             Content.RootDirectory = "Content";
 

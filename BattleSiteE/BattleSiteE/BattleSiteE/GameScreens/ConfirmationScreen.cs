@@ -93,17 +93,17 @@ namespace BattleSiteE.GameScreens
 
         public override void HandleInput()
         {
-            if (ScreenManager.InputController.isMenuRight())
+            if (ScreenManager.InputController.isKeyDown(GameKey.RIGHT, null))
             {
                 selectedindex += 1;
                 selectedindex = (int)MathHelper.Clamp(selectedindex, 0, 1);
             }
-            if (ScreenManager.InputController.isMenuLeft())
+            if (ScreenManager.InputController.isKeyDown(GameKey.LEFT, null))
             {
                 selectedindex -= 1;
                 selectedindex = (int)MathHelper.Clamp(selectedindex, 0, 1);
             }
-            if (ScreenManager.InputController.isMenuSelect())
+            if (ScreenManager.InputController.isKeyDown(GameKey.SELECT, null))
             {
                 if (selectedindex == 0) confirm();
                 else if (selectedindex == 1) back();

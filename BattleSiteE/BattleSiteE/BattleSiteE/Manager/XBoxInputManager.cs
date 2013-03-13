@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
+using BattleSiteE.Manager;
 
 namespace BattleSiteE.Manager
 {
@@ -19,7 +20,7 @@ namespace BattleSiteE.Manager
      **/
     public class XBoxInputManager : InputManager
     {
-        public const int MaxInputs = 4;
+        public const int MaxInputs = 2;
 
         public readonly GamePadState[] CurrentGamepadStates;
 
@@ -36,98 +37,27 @@ namespace BattleSiteE.Manager
             for (int i = 0; i < MaxInputs; i++)
             {
                 LastGamepadStates[i] = CurrentGamepadStates[i];
-
                 CurrentGamepadStates[i] = GamePad.GetState((PlayerIndex)i);
             }
         }
-        
-        //Method for checking if a given button was just pressed
-        public bool IsNewButtonPress(Buttons button, PlayerIndex? controllingPlayer, out PlayerIndex playerIndex)
-        {
-            if (controllingPlayer.HasValue)
-            {
-                playerIndex = controllingPlayer.Value;
-                int i = (int)playerIndex;
 
-                return (CurrentGamepadStates[i].IsButtonDown(button) && CurrentGamepadStates[i].IsButtonUp(button));
-            }
-            else
-            {
-                return (
-                    IsNewButtonPress(button, PlayerIndex.One, out playerIndex) ||
-                    IsNewButtonPress(button, PlayerIndex.Two, out playerIndex) ||
-                    IsNewButtonPress(button, PlayerIndex.Three, out playerIndex) ||
-                    IsNewButtonPress(button, PlayerIndex.Four, out playerIndex)
-                    );
-            }
+        public override bool isKeyDown(GameKey k, PlayerIndex? player)
+        {
+            return false;
         }
 
-        public override bool isMenuDown()
+        public override bool isKeyPressed(GameKey k, PlayerIndex? player)
         {
-            PlayerIndex n;
-            return IsNewButtonPress(Buttons.DPadDown, null, out n); 
+            return false;
         }
 
-        public override bool isMenuUp()
+        public override bool isKeyUp(GameKey k, PlayerIndex? player)
         {
-            PlayerIndex n;
-            return IsNewButtonPress(Buttons.DPadUp, null, out n); 
+            return false;
         }
 
-        public override bool isMenuRight()
-        {
-            PlayerIndex n;
-            return IsNewButtonPress(Buttons.DPadRight, null, out n);
-        }
 
-        public override bool isMenuLeft()
-        {
-            PlayerIndex n;
-            return IsNewButtonPress(Buttons.DPadLeft, null, out n);
-        }
-
-        public override bool isMenuSelect()
-        {
-            PlayerIndex n;
-            return IsNewButtonPress(Buttons.A, null, out n); 
-        }
-
-        public override bool isMenuBack()
-        {
-            PlayerIndex n;
-            return IsNewButtonPress(Buttons.B, null, out n); 
-        }
-
-        public override bool isControllerUp(PlayerIndex index)
-        {
-
-            int i = (int)index;
-            return CurrentGamepadStates[i].IsButtonDown(Buttons.DPadUp);
-        }
-
-        public override bool isControllerRight(PlayerIndex index)
-        {
-            int i = (int)index;
-            return CurrentGamepadStates[i].IsButtonDown(Buttons.DPadRight);
-        }
-
-        public override bool isControllerDown(PlayerIndex index)
-        {
-            int i = (int)index;
-            return CurrentGamepadStates[i].IsButtonDown(Buttons.DPadDown);
-        }
-
-        public override bool isControllerLeft(PlayerIndex index)
-        {
-            int i = (int)index;
-            return CurrentGamepadStates[i].IsButtonDown(Buttons.DPadLeft);
-        }
-
-        public override bool isFiring(Microsoft.Xna.Framework.PlayerIndex index)
-        {
-            int i = (int)index;
-            return CurrentGamepadStates[i].IsButtonDown(Buttons.RightTrigger);
-        }
+       
 
 
     }

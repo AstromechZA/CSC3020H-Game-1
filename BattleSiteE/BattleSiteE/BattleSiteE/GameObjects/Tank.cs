@@ -6,12 +6,14 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using System.Diagnostics;
+using BattleSiteE.GameScreens;
+using BattleSiteE.Manager;
 
 namespace BattleSiteE.GameObjects
 {
-    enum Bearing {NORTH, SOUTH, EAST, WEST, NONE }
+    public enum Bearing {NORTH, SOUTH, EAST, WEST, NONE }
 
-    class Tank : GameObject
+    public class Tank : GameObject
     {
         Texture2D tanktexture;
 
@@ -46,7 +48,12 @@ namespace BattleSiteE.GameObjects
         private Vector2 position;
         private Bearing bearing = Bearing.NONE;
         private Bearing targetBearing = Bearing.NONE;
-        private const float stepSize = 1.0f;
+
+        // MOVEMENT CONSTS
+        private const float stepSize = 2.0f;
+        private const float turningrad = 4.0f;
+        private const float bulletv = 10.0f;
+
 
         private Color tint;
         private PlayerIndex controllingIndex;
@@ -54,6 +61,8 @@ namespace BattleSiteE.GameObjects
 
         private float gunAnimationProgress = 0.0f;
         private float gunAnimationDelta = 0.1f;
+
+        private float spawningProgress = 0.0f;
 
 
 
@@ -125,9 +134,9 @@ namespace BattleSiteE.GameObjects
                     break;
             }
 
-            spriteBatch.Draw(tanktexture, new Rectangle((int)(position.X - 32), (int)(position.Y - 32), 64, 64), t_tread, Color.White);
-            spriteBatch.Draw(tanktexture, new Rectangle((int)(position.X - 32), (int)(position.Y - 32), 64, 64), t_tank, tint);
-            spriteBatch.Draw(tanktexture, new Rectangle((int)(position.X - 32 + g_offset_x), (int)(position.Y - 32 + g_offset_y), 64, 64), t_gun, tint);
+            spriteBatch.Draw(tanktexture, new Rectangle((int)(position.X - 32), (int)(position.Y - 32), 64, 64), t_tread, Color.White * spawningProgress);
+            spriteBatch.Draw(tanktexture, new Rectangle((int)(position.X - 32), (int)(position.Y - 32), 64, 64), t_tank, tint * spawningProgress);
+            spriteBatch.Draw(tanktexture, new Rectangle((int)(position.X - 32 + g_offset_x), (int)(position.Y - 32 + g_offset_y), 64, 64), t_gun, tint * spawningProgress);
 
             // should we be showing a firing sprite?
             if (gunAnimationProgress > 0.001f)
@@ -153,7 +162,7 @@ namespace BattleSiteE.GameObjects
 
         }
 
-        public virtual void Update(int [,] collisionGrid)
+        public virtual void Update()
         {
 
             // GUN ANIMATIONS
@@ -162,127 +171,80 @@ namespace BattleSiteE.GameObjects
                 gunAnimationProgress -= gunAnimationDelta;
                 if (gunAnimationProgress < 0.001f) gunAnimationProgress = 0.0f;
             }
-            
-            // IF TARGET DIRECTION IS NONE, NO BUTTONS HAVE BEEN PRESSED AND WE CANT BE MOVING
-            if (targetBearing == Bearing.NONE) { }
-            // OTHERWISE IF WE NEED TO CHANGE DIRECTION
-            else if (bearing != targetBearing)
+
+            // SPAWNING fade in
+            if (spawningProgress < 1.0f)
             {
-
-                // IF WE ARE GOING TO REVERSE, DO IT ANYTIME
-                if (isHorizantal(bearing) == isHorizantal(targetBearing))
-                {
-                    bearing = targetBearing;
-                }
-                // OTHERWISE WAIT FOR AN INTERSECTION
-                else if (nearIntersection(position, 2.0f))
-                {
-                    Vector2 temp = new Vector2(position.X, position.Y); //COPY
-
-                    switch (targetBearing)
-                    {
-                        case Bearing.NORTH:
-                            temp.Y -= stepSize;
-                            temp.Y -= 32;
-                            break;
-                        case Bearing.SOUTH:
-                            temp.Y += stepSize;
-                            temp.Y += 32;
-                            break;
-                        case Bearing.EAST:
-                            temp.X += stepSize;
-                            temp.X += 32;
-                            break;
-                        case Bearing.WEST:
-                            temp.X -= stepSize;
-                            temp.X -= 32;
-                            break;
-                    }
-
-                    // CHECK COLLISION
-                    if (isFreePosition(temp, collisionGrid, 64, true))
-                    {
-                        bearing = targetBearing;
-                        position = alignToIntersection(position);
-                    }
-                }
-                
+                spawningProgress += 0.03f;
+                return;
             }
 
-            // OTHERWISE IF WE ARE MOVING
+            // CHECK FOR direction change
             if (targetBearing != Bearing.NONE)
             {
 
-                //FIRST CHECK IF IT IS POSSIBLE TO MOVE TO THE NEW POSITION
-                // 1 - MAKE TEMPORY POSITION
-                Vector2 temp = new Vector2(position.X, position.Y); //COPY
+                // FIRST get current mask
+                Rectangle r = getCollisionMask();
 
-                // 2 - GET POINT ON BORDER OF SPRITE
-                switch (bearing)
+                // THEN work out movement diffs
+                float tx = r.X;
+                float ty = r.Y;
+
+                switch (targetBearing)
                 {
                     case Bearing.NORTH:
-                        temp.Y -= stepSize;
-                        temp.Y -= 32;
+                        ty -= stepSize;
                         break;
                     case Bearing.SOUTH:
-                        temp.Y += stepSize;
-                        temp.Y += 32;
+                        ty += stepSize;
                         break;
                     case Bearing.EAST:
-                        temp.X += stepSize;
-                        temp.X += 32;
+                        tx += stepSize;
                         break;
                     case Bearing.WEST:
-                        temp.X -= stepSize;
-                        temp.X -= 32;
+                        tx -= stepSize;
                         break;
-                }                
-                
-                // 3 - CHECK COLLISION
-                if (isFreePosition(temp, collisionGrid, 64, true))
+                }
+
+                //apply movement diffs
+                r.X = (int)tx;
+                r.Y = (int)ty;
+
+                // IF the new mask position does not collide, apply the movement diffs to the position
+
+
+                if (!WallManager.Instance.collides(r) && !(TankManager.Instance.tankCollisionWithTank(r, this)) )
                 {
-                    //5 - MOVE IN DIRECTION
-                    switch (bearing)
+                    position.X = tx + r.Width / 2;
+                    position.Y = ty + r.Height / 2;
+                    bearing = targetBearing;
+                }
+                else
+                {
+                    // help with alignment
+                    int ax = (int)Math.Round(tx / 32) * 32;
+                    int ay = (int)Math.Round(ty / 32) * 32;
+
+                    if (Math.Sqrt(Math.Pow(ax - tx, 2) + Math.Pow(ay - ty, 2)) < 10)
                     {
-                        case Bearing.NORTH:
-                            position.Y -= stepSize;
-                            break;
-                        case Bearing.SOUTH:
-                            position.Y += stepSize;
-                            break;
-                        case Bearing.EAST:
-                            position.X += stepSize;
-                            break;
-                        case Bearing.WEST:
-                            position.X -= stepSize;
-                            break;
+                        tx = ax;
+                        ty = ay;
+
+                        //apply movement diffs
+                        r.X = (int)tx;
+                        r.Y = (int)ty;
+
+                        if (!WallManager.Instance.collides(r) && !(TankManager.Instance.tankCollisionWithTank(r, this)))
+                        {
+                            position.X = tx + r.Width / 2;
+                            position.Y = ty + r.Height / 2;
+                        }
+
+                        bearing = targetBearing;
                     }
+
                 }
             }
-
-
-        }
-
-        public void SetNextTargetBearing(Bearing next)
-        {
-            if (targetBearing != next) targetBearing = next;
-        }
-
-        public Bullet Fire()
-        {
-            gunAnimationProgress = 1.0f;
-            float bulletspeed = 5.0f;
-            float dx, dy;
-            switch(bearing)
-            {
-                case Bearing.EAST: dx = bulletspeed; dy = 0f; break;
-                case Bearing.WEST: dx = -bulletspeed; dy = 0f; break;
-                case Bearing.NORTH: dx = 0f; dy = -bulletspeed; break;
-                case Bearing.SOUTH: dx = 0f; dy = bulletspeed; break;
-                default: dx = 0; dy = 0; break;
-            }
-
-            return new Bullet(position.X, position.Y, bearing, dx, dy);
         }
 
         public bool canFire()
@@ -290,53 +252,54 @@ namespace BattleSiteE.GameObjects
             return !(gunAnimationProgress > 0.00f);
         }
 
+        public Bullet Fire()
+        {
+            gunAnimationProgress = 1.0f;
+            return new Bullet(this, position, bearing, bulletv);
+
+        }
+
+        /**
+         * Collision mask, 1px samller than the borders just as the sprite.
+         **/
         public override Rectangle getCollisionMask()
         {
             return new Rectangle((int)(position.X-31), (int)(position.Y-31), 62, 62);
         }
 
-
-
-        private bool isHorizantal(Bearing b)
+        public Vector2 alignPointToGrid(float x, float y, int gridSize)
         {
-            if (b == Bearing.WEST) return true;
-            if (b == Bearing.EAST) return true;
-            return false;
+            return new Vector2 ((int)Math.Round(x/gridSize)*gridSize, (int)Math.Round(y/gridSize)*gridSize);
         }
 
-        private bool nearIntersection(Vector2 p, float range)
+        /**
+         * Attempt to change direction of the tank. This just sets the target bearing, Update() does the actual collision detection
+         * and movement whilst Draw() uses the actual bearing variable to draw the correct sprite.
+         */
+        public void attemptDirection(Bearing b)
         {
-            if ((Math.Abs((p.X % 64) - 32) < range) && (Math.Abs((p.Y % 64) - 32) < range)) return true;
-            return false;
+            targetBearing = b;
         }
 
-        private Vector2 alignToIntersection(Vector2 p)
+        public void handleInput(Manager.InputController inputController)
         {
-            // align vectors on 0-64-128
-            Vector2 output = new Vector2(p.X-32, p.Y-32);
+            // first reset target bearing
+            targetBearing = Bearing.NONE;
 
-            output.X = (float)Math.Round(output.X / 64) * 64 + 32;
-            output.Y = (float)Math.Round(output.Y / 64) * 64 + 32;
-
-            return output;
-        }
-
-        private bool isFreePosition(Vector2 position, int [,] collisionGrid, int gridSize, bool collideOffMap)
-        {
-            //First get index
-            int tX = (int)Math.Floor(position.X / gridSize);
-            int tY = (int)Math.Floor(position.Y / gridSize);
-
-            //Check range
-            if (!((tX >= 0) && (tX < collisionGrid.GetLength(1)) && (tY >= 0) && (tY < collisionGrid.GetLength(0))))
+            if (inputController.isKeyPressed(GameKey.UP, ControllingIndex)) targetBearing = Bearing.NORTH;
+            else if (inputController.isKeyPressed(GameKey.DOWN, ControllingIndex)) targetBearing = Bearing.SOUTH;
+            else if (inputController.isKeyPressed(GameKey.LEFT, ControllingIndex)) targetBearing = Bearing.WEST;
+            else if (inputController.isKeyPressed(GameKey.RIGHT, ControllingIndex)) targetBearing = Bearing.EAST;
+            if (inputController.isKeyPressed(GameKey.FIRE, ControllingIndex))
             {
-                return !collideOffMap;
+                if (canFire())
+                {
+                    BulletManager.Instance.addBullet(Fire());
+                }
             }
 
-            // If in range then its fine if the value is 0 or less
-            return !(collisionGrid[tY, tX] > 0);
+
+
         }
-
-
     }
 }

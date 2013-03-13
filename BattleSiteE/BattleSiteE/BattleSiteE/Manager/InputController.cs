@@ -4,10 +4,13 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 
-namespace BattleSiteE.Manager
-{   
 
-    public class InputManager
+namespace BattleSiteE.Manager
+{
+
+    public enum GameKey { UP, DOWN, LEFT, RIGHT, SELECT, BACK, FIRE };
+
+    public abstract class InputManager
     {
 
         public InputManager()
@@ -16,18 +19,10 @@ namespace BattleSiteE.Manager
         }
 
         public virtual void Update() { }
-        public virtual bool isMenuDown() { return false; }
-        public virtual bool isMenuUp() { return false; }
-        public virtual bool isMenuRight() { return false; }
-        public virtual bool isMenuLeft() { return false; }
-        public virtual bool isMenuSelect() { return false; }
-        public virtual bool isMenuBack() { return false; }
 
-        public virtual bool isControllerUp(PlayerIndex index) { return false; }
-        public virtual bool isControllerRight(PlayerIndex index) { return false; }
-        public virtual bool isControllerDown(PlayerIndex index) { return false; }
-        public virtual bool isControllerLeft(PlayerIndex index) { return false; }
-        public virtual bool isFiring(PlayerIndex index) { return false; }
+        public abstract bool isKeyPressed(GameKey k, PlayerIndex? player);
+        public abstract bool isKeyDown(GameKey k, PlayerIndex? player);
+        public abstract bool isKeyUp(GameKey k, PlayerIndex? player);
 
     }
 
@@ -64,60 +59,21 @@ namespace BattleSiteE.Manager
          * For things like Menu's
          */
 
-        public bool isMenuDown()
+        public bool isKeyPressed(GameKey k, PlayerIndex? player)
         {
-            return im.isMenuDown();
+            return im.isKeyPressed(k, player);
         }
 
-        public bool isMenuUp()
+        public bool isKeyDown(GameKey k, PlayerIndex? player)
         {
-            return im.isMenuUp();
+            return im.isKeyDown(k, player);
         }
 
-        public bool isMenuRight()
+        public bool isKeyUp(GameKey k, PlayerIndex? player)
         {
-            return im.isMenuRight();
+            return im.isKeyUp(k, player);
         }
 
-        public bool isMenuLeft()
-        {
-            return im.isMenuLeft();
-        }
-
-        public bool isMenuSelect()
-        {
-            return im.isMenuSelect();
-        }
-
-        public bool isMenuBack()
-        {
-            return im.isMenuBack();
-        }
-
-        public bool isControllerUp(PlayerIndex index) 
-        { 
-            return im.isControllerUp(index); 
-        }
-
-        public bool isControllerRight(PlayerIndex index) 
-        { 
-            return im.isControllerRight(index); 
-        }
-
-        public bool isControllerDown(PlayerIndex index) 
-        { 
-            return im.isControllerDown(index); 
-        }
-
-        public bool isControllerLeft(PlayerIndex index) 
-        { 
-            return im.isControllerLeft(index); 
-        }
-
-        public bool isFiring(PlayerIndex index)
-        {
-            return im.isFiring(index);
-        }
 
         
 

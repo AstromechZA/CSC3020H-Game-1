@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
+using BattleSiteE.Manager;
 
 namespace BattleSiteE.Manager
 {
@@ -33,106 +34,63 @@ namespace BattleSiteE.Manager
             CurrentKeyboardState = Keyboard.GetState();
         }
 
-        //Method for checking if a given key was just pressed
-        public bool IsNewKeyPress(Keys key)
+        public override bool isKeyDown(GameKey k, PlayerIndex? player)
         {
-            return (CurrentKeyboardState.IsKeyDown(key) && LastKeyboardState.IsKeyUp(key));            
+            Keys kk = getKeyForAction(k, player);
+            return (CurrentKeyboardState.IsKeyDown(kk) && LastKeyboardState.IsKeyUp(kk));
         }
 
-        public override bool isMenuDown()
+        public override bool isKeyPressed(GameKey k, PlayerIndex? player)
         {
-            return IsNewKeyPress(Keys.Down);
+            Keys kk = getKeyForAction(k, player);
+            return (CurrentKeyboardState.IsKeyDown(kk) && LastKeyboardState.IsKeyDown(kk));
         }
 
-        public override bool isMenuUp()
+        public override bool isKeyUp(GameKey k, PlayerIndex? player)
         {
-            return IsNewKeyPress(Keys.Up);
+            Keys kk = getKeyForAction(k, player);
+            return (CurrentKeyboardState.IsKeyUp(kk) && LastKeyboardState.IsKeyDown(kk));
         }
 
-        public override bool isMenuRight()
+        public Keys getKeyForAction(GameKey k, PlayerIndex? player)
         {
-            return IsNewKeyPress(Keys.Right);
-        }
+            if (k == GameKey.BACK) return Keys.Escape;
+            if (k == GameKey.SELECT) return Keys.Enter;
 
-        public override bool isMenuLeft()
-        {
-            return IsNewKeyPress(Keys.Left);
-        }
-
-        public override bool isMenuSelect()
-        {
-            return IsNewKeyPress(Keys.Enter) || IsNewKeyPress(Keys.Space);
-        }
-
-        public override bool isMenuBack()
-        {
-            return IsNewKeyPress(Keys.Escape) || IsNewKeyPress(Keys.Back);
-        }
-
-        public override bool isControllerUp(PlayerIndex index)
-        {
-            switch( index )
+            if (k == GameKey.UP)
             {
-                case PlayerIndex.One:
-                    return CurrentKeyboardState.IsKeyDown(Keys.W);
-                case PlayerIndex.Two:
-                    return CurrentKeyboardState.IsKeyDown(Keys.Up);
-                default:
-                    return false;
+                if (player.HasValue && player == PlayerIndex.One) return Keys.W;
+                if (player.HasValue && player == PlayerIndex.Two) return Keys.Up;
+                return Keys.Up;
             }
+            if (k == GameKey.DOWN)
+            {
+                if (player.HasValue && player == PlayerIndex.One) return Keys.S;
+                if (player.HasValue && player == PlayerIndex.Two) return Keys.Down;
+                return Keys.Down;
+            }
+            if (k == GameKey.LEFT)
+            {
+                if (player.HasValue && player == PlayerIndex.One) return Keys.A;
+                if (player.HasValue && player == PlayerIndex.Two) return Keys.Left;
+                return Keys.Left;
+            }
+            if (k == GameKey.RIGHT)
+            {
+                if (player.HasValue && player == PlayerIndex.One) return Keys.D;
+                if (player.HasValue && player == PlayerIndex.Two) return Keys.Right;
+                return Keys.Right;
+            }
+            if (k == GameKey.FIRE)
+            {
+                if (player.HasValue && player == PlayerIndex.One) return Keys.Space;
+                if (player.HasValue && player == PlayerIndex.Two) return Keys.Enter;
+                return Keys.Enter;
+            }
+            return Keys.F16;
+
         }
 
-        public override bool isControllerRight(PlayerIndex index)
-        {
-            switch (index)
-            {
-                case PlayerIndex.One:
-                    return CurrentKeyboardState.IsKeyDown(Keys.D);
-                case PlayerIndex.Two:
-                    return CurrentKeyboardState.IsKeyDown(Keys.Right);
-                default:
-                    return false;
-            }
-        }
-
-        public override bool isControllerDown(PlayerIndex index)
-        {
-            switch (index)
-            {
-                case PlayerIndex.One:
-                    return CurrentKeyboardState.IsKeyDown(Keys.S);
-                case PlayerIndex.Two:
-                    return CurrentKeyboardState.IsKeyDown(Keys.Down);
-                default:
-                    return false;
-            }
-        }
-
-        public override bool isControllerLeft(PlayerIndex index)
-        {
-            switch (index)
-            {
-                case PlayerIndex.One:
-                    return CurrentKeyboardState.IsKeyDown(Keys.A);
-                case PlayerIndex.Two:
-                    return CurrentKeyboardState.IsKeyDown(Keys.Left);
-                default:
-                    return false;
-            }
-        }
-
-        public override bool isFiring(PlayerIndex index)
-        {
-            switch (index)
-            {
-                case PlayerIndex.One:
-                    return CurrentKeyboardState.IsKeyDown(Keys.Space);
-                case PlayerIndex.Two:
-                    return CurrentKeyboardState.IsKeyDown(Keys.Enter);
-                default:
-                    return false;
-            }
-        }
 
     }
 }

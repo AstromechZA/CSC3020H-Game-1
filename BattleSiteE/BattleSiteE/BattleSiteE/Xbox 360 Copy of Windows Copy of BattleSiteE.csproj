@@ -64,12 +64,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GameObjects\AITank.cs" />
     <Compile Include="GameObjects\Bullet.cs" />
-    <Compile Include="GameObjects\BulletController.cs" />
-    <Compile Include="GameObjects\CollisionManager.cs" />
+    <Compile Include="GameObjects\BulletManager.cs" />
     <Compile Include="GameObjects\GameObject.cs" />
     <Compile Include="GameObjects\Tank.cs" />
+    <Compile Include="GameObjects\TankManager.cs" />
+    <Compile Include="GameObjects\WallManager.cs" />
+    <Compile Include="GameObjects\WallTypes\WallBase.cs" />
+    <Compile Include="GameObjects\WallTypes\WallDamageable.cs" />
+    <Compile Include="GameObjects\WallTypes\WallPermanent.cs" />
     <Compile Include="GameScreens\ConfirmationScreen.cs" />
     <Compile Include="GameScreens\ExitConfirmationScreen.cs" />
     <Compile Include="GameScreens\GameplayScreen.cs" />

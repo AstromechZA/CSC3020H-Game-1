@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using System.Diagnostics;
 using BattleSiteE.GameObjects;
+using Microsoft.Xna.Framework.Input;
 
 namespace BattleSiteE.GameScreens
 {
@@ -15,45 +16,20 @@ namespace BattleSiteE.GameScreens
     {
 
         ContentManager contentMan;
-        Texture2D greentiles;
 
-        #region TANK TEXTURE
-        
-        Texture2D tanktexture;
-
-        #endregion
-        
-
-        int[,] wallmap = new int[11,20] 
-        {
-            {1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,},
-            {1,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,1,},
-            {1,0,1,1,0,0,1,1,1,1, 1,1,1,1,0,0,1,1,0,1,},
-            {1,0,1,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,1,0,1,},
-            {1,0,0,0,1,1,1,0,0,1, 1,0,0,1,1,1,0,0,0,1,},
-            {1,0,0,0,1,0,0,0,0,0, 0,0,0,0,0,1,0,0,0,1,},
-            {1,0,1,0,0,0,1,0,1,1, 1,1,0,1,0,0,0,1,0,1,},
-            {1,1,1,0,1,0,1,0,0,0, 0,0,0,1,0,1,0,1,1,1,},
-            {1,0,1,0,1,0,1,0,1,0, 0,1,0,1,0,1,0,1,0,1,},
-            {1,0,0,0,0,0,0,0,1,0, 0,1,0,0,0,0,0,0,0,1,},
-            {1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,},
-        };
-
-        List<Tank> controlledTanks = new List<Tank>();
-        List<Tank> botTanks = new List<Tank>();
-        BulletController bcontroller = new BulletController();
+        Texture2D gamelayout;
         
         public GameplayScreen()
         {
             TransitionOnTime = TimeSpan.FromSeconds(1);
             TransitionOffTime = TimeSpan.FromSeconds(1);
 
-            // Add a new tank
-            //  :   params: Color, center position, bearing direction, player index
-            controlledTanks.Add(new Tank(Color.LightGoldenrodYellow, 96, 96, Bearing.WEST, PlayerIndex.One));
-            controlledTanks.Add(new Tank(Color.LightGreen, 96, 160, Bearing.EAST, PlayerIndex.Two));
+            //create singletons
+            WallManager w = WallManager.Instance;
+            TankManager tm = TankManager.Instance;
 
-            
+            tm.addTank(new Tank(Color.LightGreen, 64, 64, Bearing.EAST, PlayerIndex.One));
+            tm.addTank(new Tank(Color.LightSkyBlue, 64, 128, Bearing.EAST, PlayerIndex.Two));
         }
 
        
@@ -64,38 +40,14 @@ namespace BattleSiteE.GameScreens
             if (contentMan == null)
                 contentMan = new ContentManager(ScreenManager.Game.Services, "Content");
 
+            gamelayout = contentMan.Load<Texture2D>("map1");
+            TankManager.Instance.setTankTexture(contentMan.Load<Texture2D>("tanks"));
 
-            tanktexture = contentMan.Load<Texture2D>("tanks");
+            WallManager.Instance.setTextureMap(contentMan.Load<Texture2D>("minitileset"));
+            WallManager.Instance.makeWalls(gamelayout);
 
-            foreach (Tank t in controlledTanks) t.SetTexture(tanktexture);
-            foreach (Tank t in botTanks) t.SetTexture(tanktexture);
-
-            bcontroller.setTexture(contentMan.Load<Texture2D>("bullets"));
-            greentiles = contentMan.Load<Texture2D>("greentileset");
-
-            #region WALLBUILDING
-            int my = wallmap.GetLength(0);
-            int mx = wallmap.GetLength(1);
-
-            //build tile set data
-            for (int y = 0; y < my; y++)
-            {
-                for (int x = 0; x < mx; x++)
-                {
-                    if (wallmap[y, x] == 0)
-                    {
-                        continue;
-                    }
-                    int tot = 0;
-                    if ((y < my - 1) && wallmap[y + 1, x] > 0) tot += 1;
-                    if ((y>0) && wallmap[y-1, x] > 0)       tot+=2;
-                    if ((x < mx - 1) && wallmap[y, x + 1] > 0) tot += 4;
-                    if ((x>0) && wallmap[y, x-1] > 0)       tot+=8;
-                    wallmap[y, x] = tot;
-                }
-            }
-            #endregion
-
+            BulletManager.Instance.setTexture(contentMan.Load<Texture2D>("bullets"));
+            
 
         }
 
@@ -110,40 +62,22 @@ namespace BattleSiteE.GameScreens
             Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
 
             sb.Begin();
-            int my = wallmap.GetLength(0);
-            int mx = wallmap.GetLength(1);
+            
+            WallManager.Instance.draw(sb, TransitionAlpha);
 
-            //draw tile set
-            for (int y = 0; y < my; y++)
-            {
-                for (int x = 0; x < mx; x++)
-                {
-                    int ty = (int)Math.Floor(wallmap[y, x] / 4.0);
-                    int tx = wallmap[y, x] % 4;
+            TankManager.Instance.drawTanks(sb);
 
-                    Rectangle src = new Rectangle(tx*64, ty*64, 64, 64);
-                    Rectangle dst = new Rectangle(x * 64, y * 64, 64, 64);
-                    sb.Draw(greentiles, dst, src, Color.White);
-                }
-            }
-
-            bcontroller.draw(sb);
-
-            // draw tank
-            foreach (Tank t in controlledTanks) t.Draw(sb);
-            foreach (Tank t in botTanks) t.Draw(sb);
-
+            BulletManager.Instance.drawBullets(sb);
+            
             sb.End();
 
-            
-            
 
 
         }
 
         public override void HandleInput()
         {
-            if (ScreenManager.InputController.isMenuBack())
+            if (ScreenManager.InputController.isKeyDown(GameKey.BACK, null))
             {
                 ScreenManager.ExitAll();
                 ScreenManager.AddScreen(new MenuBackgroundScreen());
@@ -151,51 +85,20 @@ namespace BattleSiteE.GameScreens
                 return;
             }
 
-            // check registered controlled tanks
-
-            foreach (Tank t in controlledTanks)
+            foreach (Tank t in TankManager.Instance.get_tankList())
             {
-                // for each controlled tank, get the player index, 
-                if (ScreenManager.InputController.isControllerUp(t.ControllingIndex))
-                {
-                    t.SetNextTargetBearing(Bearing.NORTH);
-                }
-                if (ScreenManager.InputController.isControllerRight(t.ControllingIndex))
-                {
-                    t.SetNextTargetBearing(Bearing.EAST);
-                }
-                if (ScreenManager.InputController.isControllerDown(t.ControllingIndex))
-                {
-                    t.SetNextTargetBearing(Bearing.SOUTH);
-                }
-                if (ScreenManager.InputController.isControllerLeft(t.ControllingIndex))
-                {
-                    t.SetNextTargetBearing(Bearing.WEST);
-                }
-                if (ScreenManager.InputController.isFiring(t.ControllingIndex))
-                {
-                    if (t.canFire())
-                    {
-                        bcontroller.addBullet(t.Fire());                        
-                    } 
-                }
-            }
+                t.handleInput(ScreenManager.InputController);
 
-            // look up the state of the control set for player index i
-            // if direction is pressed, set targetdirection
+
+            }
 
             
         }
 
         public override void Update(GameTime gameTime, bool coveredByOtherScreen)
         {
-            if (!this.isExiting)
-            {
-                // update tank control movement using collision map 
-                foreach (Tank t in controlledTanks) t.Update(wallmap);
-                foreach (Tank t in botTanks) t.Update(wallmap);
-                bcontroller.update(wallmap, 64);
-            }
+            TankManager.Instance.updateTanks();
+            BulletManager.Instance.updateBullets();
 
             base.Update(gameTime, coveredByOtherScreen);
         }

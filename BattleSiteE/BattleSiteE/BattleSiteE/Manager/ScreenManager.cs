@@ -113,7 +113,6 @@ namespace BattleSiteE.Manager
                 GameScreen currentScreen = updateScreens[updateScreens.Count - 1];
                 updateScreens.RemoveAt(updateScreens.Count - 1);
 
-                currentScreen.Update(gameTime, false);
 
                 inputController.Update();
 
@@ -122,6 +121,9 @@ namespace BattleSiteE.Manager
                     currentScreen.HandleInput();
                     inputActive = false;
                 }
+
+
+                currentScreen.Update(gameTime, false);
 
             }
 
