@@ -22,43 +22,46 @@ namespace BattleSiteE.GameObjects.Managers
 
 
         Texture2D tanktexture;
-        List<Tank> controlledTanks = new List<Tank>();
+        List<TankBase> controlledTanks = new List<TankBase>();
+
+        private List<Point> playerSpawnPoints = new List<Point>();
+        private List<Point> AISpawnPoints = new List<Point>();
 
         public TankManager()
         {
 
         }
 
-        public void addTank(Tank newTank)
+        public void addTank(TankBase newTank)
         {
-            newTank.SetTexture(tanktexture);
+            newTank.set_texture(tanktexture);
             controlledTanks.Add(newTank);
         }
         
         public void setTankTexture(Texture2D tex)
         {
             tanktexture = tex;
-            foreach (Tank t in controlledTanks) t.SetTexture(tanktexture);
+            foreach (TankBase t in controlledTanks) t.set_texture(tanktexture);
         }
 
         public void drawTanks(SpriteBatch sb)
         {
-            foreach (Tank t in controlledTanks) t.Draw(sb);
+            foreach (TankBase t in controlledTanks) t.Draw(sb);
         }
 
-        public List<Tank> get_tankList()
+        public List<TankBase> get_tankList()
         {
             return controlledTanks;
         }
 
         public void updateTanks()
         {
-            foreach (Tank t in controlledTanks) t.Update(); 
+            foreach (TankBase t in controlledTanks) t.Update(); 
         }
 
-        public Tank getCollidingTank(Rectangle collisionMask)
+        public TankBase getCollidingTank(Rectangle collisionMask)
         {
-            foreach (Tank other in controlledTanks)
+            foreach (TankBase other in controlledTanks)
             {
                 Rectangle otherMask = other.getCollisionMask();
 
@@ -67,9 +70,9 @@ namespace BattleSiteE.GameObjects.Managers
             return null;
         }
 
-        public bool tankCollisionWithTank(Rectangle collisionMask, Tank self)
+        public bool tankCollisionWithTank(Rectangle collisionMask, TankBase self)
         {
-            foreach (Tank other in controlledTanks)
+            foreach (TankBase other in controlledTanks)
             {
                 if (self == other) continue;
 
@@ -77,6 +80,44 @@ namespace BattleSiteE.GameObjects.Managers
                 if (collisionMask.Intersects(otherMask)) return true;
             }
             return false;
+        }
+
+        internal void clear()
+        {
+            instance = new TankManager();
+        }
+
+        public void loadSpawnPoints(Texture2D t)
+        {
+            Color[] color1D = new Color[t.Width * t.Height];
+            t.GetData(color1D);
+
+            Color[,] colors2D = new Color[t.Height, t.Width];
+
+            for (int y = 0; y < t.Height; y++)
+                for (int x = 0; x < t.Width; x++)                
+                    colors2D[y, x] = color1D[y * t.Width + x];
+
+                
+
+            int my = t.Height;
+            int mx = t.Width;
+
+            for (int y = 0; y < my; y++)
+            {
+                for (int x = 0; x < mx; x++)
+                {
+                    if (colors2D[y, x] == Color.Blue)
+                    {
+                        playerSpawnPoints.Add(new Point(x*32, y*32));
+                    }
+                    else if (colors2D[y, x] == Color.Red)
+                    {
+                        AISpawnPoints.Add(new Point(x*32, y*32));
+                    }
+
+                }
+            }
         }
     }
 }

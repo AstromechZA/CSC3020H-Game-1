@@ -19,7 +19,7 @@ namespace BattleSiteE.GameObjects
 
         private Texture2D explosiontexture;
         private Texture2D texture;
-        private Tank parentTank;
+        private TankBase parentTank;
 
         private float explosionProgress = 0.0f;
         
@@ -47,7 +47,7 @@ namespace BattleSiteE.GameObjects
 
 
 
-        public Bullet(Tank firer, Vector2 firedFrom, Bearing b, float bulletv)
+        public Bullet(PlayerTank firer, Vector2 firedFrom, Bearing b, float bulletv)
         {
             position = new Vector2(firedFrom.X, firedFrom.Y);
             bearing = b;
@@ -83,7 +83,7 @@ namespace BattleSiteE.GameObjects
                 }
 
                 // if it collides with a tank
-                Tank rtc = TankManager.Instance.getCollidingTank(r);
+                TankBase rtc = TankManager.Instance.getCollidingTank(r);
                 if (rtc != null && rtc != parentTank)
                 {
                     exploding = true;

@@ -200,5 +200,10 @@ namespace BattleSiteE.GameObjects.Managers
             }
 
         }
+
+        internal void clear()
+        {
+            instance = new WallManager();
+        }
     }
 }

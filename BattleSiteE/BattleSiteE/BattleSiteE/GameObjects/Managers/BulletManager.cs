@@ -78,5 +78,10 @@ namespace BattleSiteE.GameObjects.Managers
             }
             return null;
         }
+
+        internal void clear()
+        {
+            instance = new BulletManager();
+        }
     }
 }

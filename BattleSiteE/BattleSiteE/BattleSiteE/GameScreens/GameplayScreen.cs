@@ -11,7 +11,6 @@ using System.Diagnostics;
 using BattleSiteE.GameObjects;
 using BattleSiteE.GameObjects.Managers;
 using Microsoft.Xna.Framework.Input;
-using BattleSiteE.Other;
 
 namespace BattleSiteE.GameScreens
 {
@@ -22,7 +21,6 @@ namespace BattleSiteE.GameScreens
 
         Texture2D gamelayout;
 
-        SpriteSheet tankSheet;
         
         public GameplayScreen()
         {
@@ -31,10 +29,14 @@ namespace BattleSiteE.GameScreens
 
             //create singletons
             WallManager w = WallManager.Instance;
-            TankManager tm = TankManager.Instance;
+            w.clear();
 
-            tm.addTank(new Tank(Color.LightGreen, 64, 64, Bearing.EAST, PlayerIndex.One));
-            tm.addTank(new Tank(Color.LightSkyBlue, 64, 128, Bearing.EAST, PlayerIndex.Two));
+            TankManager tm = TankManager.Instance;
+            tm.clear();
+
+            BulletManager bm = BulletManager.Instance;
+            bm.clear();
+
         }
 
        
@@ -49,6 +51,12 @@ namespace BattleSiteE.GameScreens
 
 
             TankManager.Instance.setTankTexture(contentMan.Load<Texture2D>("tanks"));
+            TankManager.Instance.loadSpawnPoints(gamelayout);
+
+            TankManager.Instance.addTank(new PlayerTank(Color.LightGreen, 64, 64, Bearing.EAST, PlayerIndex.One));
+            TankManager.Instance.addTank(new PlayerTank(Color.LightSkyBlue, 64, 128, Bearing.EAST, PlayerIndex.Two));
+
+            TankManager.Instance.addTank(new AITank(1000,64));
 
             WallManager.Instance.setTextureMap(contentMan.Load<Texture2D>("minitileset"));
             WallManager.Instance.makeWalls(gamelayout);
@@ -92,9 +100,9 @@ namespace BattleSiteE.GameScreens
                 return;
             }
 
-            foreach (Tank t in TankManager.Instance.get_tankList())
+            foreach (TankBase t in TankManager.Instance.get_tankList())
             {
-                t.handleInput(ScreenManager.InputController);
+                if (t.GetType() == typeof(PlayerTank)) ((PlayerTank)t).handleInput(ScreenManager.InputController);
 
 
             }
