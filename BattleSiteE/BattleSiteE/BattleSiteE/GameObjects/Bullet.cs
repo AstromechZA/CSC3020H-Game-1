@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Diagnostics;
 
 using BattleSiteE.GameObjects.Managers;
+using BattleSiteE.GameObjects.WallTypes;
 
 namespace BattleSiteE.GameObjects
 {
@@ -74,9 +75,11 @@ namespace BattleSiteE.GameObjects
                 Rectangle r = getCollisionMask();
 
                 // if collide with wall, just remove it
-                if (WallManager.Instance.collides(r))
+                WallBase rwc = WallManager.Instance.getCollidingWall(r);
+                if (rwc != null)
                 {
                     exploding = true;
+                    WallManager.Instance.damage(r);
                 }
 
                 // if it collides with a tank
@@ -109,10 +112,12 @@ namespace BattleSiteE.GameObjects
 
         public Rectangle getCollisionMask()
         {
-            if (bearing == Bearing.NORTH) return new Rectangle((int)position.X - 3, (int)position.Y - 5, 6, 10);
-            else if (bearing == Bearing.SOUTH) return new Rectangle((int)position.X - 3, (int)position.Y - 5, 6, 10);
-            else if (bearing == Bearing.EAST) return new Rectangle((int)position.X - 5, (int)position.Y - 3, 10, 6);
-            else if (bearing == Bearing.WEST) return new Rectangle((int)position.X - 5, (int)position.Y - 3, 10, 6);
+            if (exploding) return Rectangle.Empty;
+
+            if (bearing == Bearing.NORTH) return new Rectangle((int)position.X - 2, (int)position.Y - 5, 4, 10);
+            else if (bearing == Bearing.SOUTH) return new Rectangle((int)position.X - 2, (int)position.Y - 5, 4, 10);
+            else if (bearing == Bearing.EAST) return new Rectangle((int)position.X - 5, (int)position.Y - 2, 10, 4);
+            else if (bearing == Bearing.WEST) return new Rectangle((int)position.X - 5, (int)position.Y - 2, 10, 4);
             else return Rectangle.Empty;
         }
 

@@ -108,6 +108,29 @@ namespace BattleSiteE.GameObjects.Managers
             return false;
         }
 
+
+        public WallBase getCollidingWall(Vector2 v)
+        {
+            Point c = gridIndex(v);
+            return wallmap[c.Y, c.X];
+        }
+
+        public WallBase getCollidingWall(Rectangle r)
+        {
+            Point tl = gridIndex(r.Left, r.Top);
+            Point br = gridIndex(r.Right, r.Bottom);
+
+            for (int y = tl.Y; y <= br.Y; y++)
+            {
+                for (int x = tl.X; x <= br.X; x++)
+                {
+                    if (wallmap[y, x] != null) return wallmap[y, x];
+                }
+            }
+
+            return null;
+        }
+
         private Point gridIndex(Point p)
         {
             return new Point((int)(p.X/32), (int)(p.Y/32));
@@ -157,6 +180,25 @@ namespace BattleSiteE.GameObjects.Managers
                     }
                 }
             }
+        }
+
+
+        public void damage(Rectangle r)
+        {
+            
+            Point tl = gridIndex(r.Left, r.Top);
+            Point br = gridIndex(r.Right, r.Bottom);
+
+            for (int y = tl.Y; y <= br.Y; y++)
+            {
+                for (int x = tl.X; x <= br.X; x++)
+                {
+                    WallBase wb = wallmap[y, x];
+                    if (wb != null)
+                        if (wb.GetType() == typeof(WallDamageable)) wallmap[y, x] = null;
+                }
+            }
+
         }
     }
 }

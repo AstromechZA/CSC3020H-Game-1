@@ -54,6 +54,7 @@ namespace BattleSiteE.GameObjects
         private const float stepSize = 2.0f;
         private const float turningrad = 4.0f;
         private const float bulletv = 10.0f;
+        private TimeSpan timebtwFire = TimeSpan.FromSeconds(1);
 
 
         private Color tint;
@@ -62,6 +63,7 @@ namespace BattleSiteE.GameObjects
 
         private float gunAnimationProgress = 0.0f;
         private float gunAnimationDelta = 0.1f;
+        private DateTime lastfire = DateTime.Now;
 
         private float spawningProgress = 0.0f;
 
@@ -250,12 +252,13 @@ namespace BattleSiteE.GameObjects
 
         public bool canFire()
         {
-            return !(gunAnimationProgress > 0.00f);
+            return ((DateTime.Now - lastfire) > timebtwFire) && !(gunAnimationProgress > 0.00f);
         }
 
         public Bullet Fire()
         {
             gunAnimationProgress = 1.0f;
+            lastfire = DateTime.Now;
             return new Bullet(this, position, bearing, bulletv);
 
         }
