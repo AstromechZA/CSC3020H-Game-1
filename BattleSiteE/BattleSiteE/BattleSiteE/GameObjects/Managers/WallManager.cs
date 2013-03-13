@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using BattleSiteE.GameObjects.WallTypes;
 using System.Diagnostics;
 
-namespace BattleSiteE.GameObjects
+namespace BattleSiteE.GameObjects.Managers
 {
 
     

@@ -7,7 +7,9 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using System.Diagnostics;
+
 using BattleSiteE.GameObjects;
+using BattleSiteE.GameObjects.Managers;
 using Microsoft.Xna.Framework.Input;
 
 namespace BattleSiteE.GameScreens
@@ -46,7 +48,7 @@ namespace BattleSiteE.GameScreens
             WallManager.Instance.setTextureMap(contentMan.Load<Texture2D>("minitileset"));
             WallManager.Instance.makeWalls(gamelayout);
 
-            BulletManager.Instance.setTexture(contentMan.Load<Texture2D>("bullets"));
+            BulletManager.Instance.setTexture(contentMan.Load<Texture2D>("bullets"), contentMan.Load<Texture2D>("bulletex"));
             
 
         }

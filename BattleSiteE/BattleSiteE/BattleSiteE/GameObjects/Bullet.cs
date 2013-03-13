@@ -6,6 +6,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Diagnostics;
 
+using BattleSiteE.GameObjects.Managers;
+
 namespace BattleSiteE.GameObjects
 {
     public class Bullet
@@ -14,17 +16,34 @@ namespace BattleSiteE.GameObjects
         private Bearing bearing;
         private Vector2 velocity;
 
+        private Texture2D explosiontexture;
         private Texture2D texture;
         private Tank parentTank;
 
-        public bool markedForDeletion;
+        private float explosionProgress = 0.0f;
+        
 
-        Rectangle[] sprites = {
+        public bool exploding;
+        public bool markedForDeletion = false;
+
+
+
+        Rectangle[] directionSprites = {
                                 new Rectangle(0, 0, 32, 32),
                                 new Rectangle(0, 32, 32, 32),
                                 new Rectangle(32, 0, 32, 32),
                                 new Rectangle(32, 32, 32, 32)
                               };
+
+        Rectangle[] explosionSprites = {
+                                new Rectangle(0, 0, 32, 32),
+                                new Rectangle(32, 0, 32, 32),
+                                new Rectangle(64, 0, 32, 32),
+                                new Rectangle(96, 0, 32, 32),
+                                new Rectangle(128, 0, 32, 32)
+                              };
+
+
 
 
         public Bullet(Tank firer, Vector2 firedFrom, Bearing b, float bulletv)
@@ -33,7 +52,7 @@ namespace BattleSiteE.GameObjects
             bearing = b;
             parentTank = firer;
 
-            markedForDeletion = false;
+            exploding = false;
 
             if (bearing == Bearing.NORTH) this.velocity = new Vector2(0, -bulletv);
             else if (bearing == Bearing.SOUTH) this.velocity = new Vector2(0, bulletv);
@@ -46,7 +65,7 @@ namespace BattleSiteE.GameObjects
         {
 
 
-            if (!markedForDeletion)
+            if (!exploding)
             {
                 // update position
                 position.X = position.X + velocity.X;
@@ -57,27 +76,30 @@ namespace BattleSiteE.GameObjects
                 // if collide with wall, just remove it
                 if (WallManager.Instance.collides(r))
                 {
-                    markedForDeletion = true;
+                    exploding = true;
                 }
 
                 // if it collides with a tank
                 Tank rtc = TankManager.Instance.getCollidingTank(r);
                 if (rtc != null && rtc != parentTank)
                 {
-                    markedForDeletion = true;
+                    exploding = true;
                 }
 
                 // if it collides with a bullet
                 Bullet rbc = BulletManager.Instance.getCollidingBulletWithBullet(r, this);
                 if (rbc != null)
                 {
-                    markedForDeletion = true;
+                    exploding = true;
                 }
 
             }
             else
             {
                 // EXPLODIIIINGGGG
+
+                explosionProgress += 0.1f;
+                if (explosionProgress > 1.0f) markedForDeletion = true;
 
             }
 
@@ -96,12 +118,20 @@ namespace BattleSiteE.GameObjects
 
         public void draw(SpriteBatch sb)
         {
-            sb.Draw(texture, new Rectangle((int)position.X - 16, (int)position.Y - 16, 32, 32), sprites[(int)bearing], Color.White);
+            if (!exploding)
+            {
+                sb.Draw(texture, new Rectangle((int)position.X - 16, (int)position.Y - 16, 32, 32), directionSprites[(int)bearing], Color.White);
+            }
+            else
+            {
+                sb.Draw(explosiontexture, new Rectangle((int)position.X - 16, (int)position.Y - 16, 32, 32), explosionSprites[(int)(explosionProgress*5)], Color.White);
+            }
         }
 
-        public void setTexture(Texture2D bulletTex)
+        public void setTextures(Texture2D bulletTex, Texture2D expTex)
         {
             texture = bulletTex;
+            explosiontexture = expTex;
         }
     }
 }

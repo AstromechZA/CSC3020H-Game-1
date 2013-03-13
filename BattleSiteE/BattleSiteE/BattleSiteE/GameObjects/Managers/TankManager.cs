@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using BattleSiteE.GameObjects;
 using Microsoft.Xna.Framework;
 
-namespace BattleSiteE.GameObjects
+namespace BattleSiteE.GameObjects.Managers
 {
     public class TankManager
     {

@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using System.Diagnostics;
 using BattleSiteE.GameScreens;
 using BattleSiteE.Manager;
+using BattleSiteE.GameObjects.Managers;
 
 namespace BattleSiteE.GameObjects
 {

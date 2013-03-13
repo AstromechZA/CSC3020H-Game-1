@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace BattleSiteE.GameObjects
+namespace BattleSiteE.GameObjects.Managers
 {
     public class BulletManager
     {
@@ -21,6 +21,7 @@ namespace BattleSiteE.GameObjects
 
         private List<Bullet> bullets;
         private Texture2D bulletTex;
+        private Texture2D explosionTex;
 
         public BulletManager()
         {
@@ -29,21 +30,24 @@ namespace BattleSiteE.GameObjects
 
         public void addBullet(Bullet p)
         {
-            p.setTexture(bulletTex);
+            p.setTextures(bulletTex, explosionTex);
             bullets.Add(p);
         }
 
-        public void setTexture(Texture2D t)
+        public void setTexture(Texture2D t, Texture2D et)
         {
             bulletTex = t;
+            explosionTex = et;
         }
 
         public void updateBullets()
         {
-            foreach (Bullet b in bullets)
+            for (int i = 0; i < bullets.Count; i++)
             {
-                b.update();
+                bullets[i].update();
+                if (bullets[i].markedForDeletion) bullets.Remove(bullets[i]);
             }
+
         }
 
         public Bullet getCollidingBullet(Rectangle r)

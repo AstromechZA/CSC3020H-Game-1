@@ -65,11 +65,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GameObjects\Bullet.cs" />
-    <Compile Include="GameObjects\BulletManager.cs" />
     <Compile Include="GameObjects\GameObject.cs" />
+    <Compile Include="GameObjects\Managers\BulletManager.cs" />
+    <Compile Include="GameObjects\Managers\TankManager.cs" />
+    <Compile Include="GameObjects\Managers\WallManager.cs" />
     <Compile Include="GameObjects\Tank.cs" />
-    <Compile Include="GameObjects\TankManager.cs" />
-    <Compile Include="GameObjects\WallManager.cs" />
     <Compile Include="GameObjects\WallTypes\WallBase.cs" />
     <Compile Include="GameObjects\WallTypes\WallDamageable.cs" />
     <Compile Include="GameObjects\WallTypes\WallPermanent.cs" />
