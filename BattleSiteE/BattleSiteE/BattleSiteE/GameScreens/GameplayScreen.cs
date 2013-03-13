@@ -11,6 +11,7 @@ using System.Diagnostics;
 using BattleSiteE.GameObjects;
 using BattleSiteE.GameObjects.Managers;
 using Microsoft.Xna.Framework.Input;
+using BattleSiteE.Other;
 
 namespace BattleSiteE.GameScreens
 {
@@ -20,6 +21,8 @@ namespace BattleSiteE.GameScreens
         ContentManager contentMan;
 
         Texture2D gamelayout;
+
+        SpriteSheet tankSheet;
         
         public GameplayScreen()
         {
@@ -43,6 +46,8 @@ namespace BattleSiteE.GameScreens
                 contentMan = new ContentManager(ScreenManager.Game.Services, "Content");
 
             gamelayout = contentMan.Load<Texture2D>("map1");
+
+
             TankManager.Instance.setTankTexture(contentMan.Load<Texture2D>("tanks"));
 
             WallManager.Instance.setTextureMap(contentMan.Load<Texture2D>("minitileset"));

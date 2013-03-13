@@ -13,6 +13,7 @@ using BattleSiteE.GameObjects.Managers;
 namespace BattleSiteE.GameObjects
 {
     public enum Bearing {NORTH, SOUTH, EAST, WEST, NONE }
+    public enum SpawnState { SPAWNING, SPAWNED, UNSPAWNING }
 
     public class Tank : GameObject
     {
@@ -56,7 +57,6 @@ namespace BattleSiteE.GameObjects
         private const float bulletv = 10.0f;
         private TimeSpan timebtwFire = TimeSpan.FromSeconds(1);
 
-
         private Color tint;
         private PlayerIndex controllingIndex;
         public PlayerIndex ControllingIndex { get { return controllingIndex; } }
@@ -65,8 +65,9 @@ namespace BattleSiteE.GameObjects
         private float gunAnimationDelta = 0.1f;
         private DateTime lastfire = DateTime.Now;
 
-        private float spawningProgress = 0.0f;
-
+        // Spawning progresses
+        private SpawnState state = SpawnState.SPAWNING;
+        private float spawnprogress = 0.0f;
 
 
         public Tank(Color tint, int x, int y, Bearing b, PlayerIndex controllingIndex)
@@ -137,9 +138,15 @@ namespace BattleSiteE.GameObjects
                     break;
             }
 
-            spriteBatch.Draw(tanktexture, new Rectangle((int)(position.X - 32), (int)(position.Y - 32), 64, 64), t_tread, Color.White * spawningProgress);
-            spriteBatch.Draw(tanktexture, new Rectangle((int)(position.X - 32), (int)(position.Y - 32), 64, 64), t_tank, tint * spawningProgress);
-            spriteBatch.Draw(tanktexture, new Rectangle((int)(position.X - 32 + g_offset_x), (int)(position.Y - 32 + g_offset_y), 64, 64), t_gun, tint * spawningProgress);
+            float alphamul = 1.0f;
+            if (state == SpawnState.SPAWNING)
+            {
+                alphamul *= (float)(Math.Pow(Math.Sin(spawnprogress*20),2)) * spawnprogress + spawnprogress/2;
+            }
+
+            spriteBatch.Draw(tanktexture, new Rectangle((int)(position.X - 32), (int)(position.Y - 32), 64, 64), t_tread, Color.White * alphamul);
+            spriteBatch.Draw(tanktexture, new Rectangle((int)(position.X - 32), (int)(position.Y - 32), 64, 64), t_tank, tint * alphamul);
+            spriteBatch.Draw(tanktexture, new Rectangle((int)(position.X - 32 + g_offset_x), (int)(position.Y - 32 + g_offset_y), 64, 64), t_gun, tint * alphamul);
 
             // should we be showing a firing sprite?
             if (gunAnimationProgress > 0.001f)
@@ -167,86 +174,90 @@ namespace BattleSiteE.GameObjects
 
         public virtual void Update()
         {
-
-            // GUN ANIMATIONS
-            if (gunAnimationProgress > 0.001f)
+            if (state == SpawnState.SPAWNING)
             {
-                gunAnimationProgress -= gunAnimationDelta;
-                if (gunAnimationProgress < 0.001f) gunAnimationProgress = 0.0f;
+                spawnprogress += 0.01f;
+                if (spawnprogress >= 1.0f) state = SpawnState.SPAWNED;
             }
-
-            // SPAWNING fade in
-            if (spawningProgress < 1.0f)
+            else if (state == SpawnState.SPAWNED)
             {
-                spawningProgress += 0.03f;
-                return;
-            }
-
-            // CHECK FOR direction change
-            if (targetBearing != Bearing.NONE)
-            {
-
-                // FIRST get current mask
-                Rectangle r = getCollisionMask();
-
-                // THEN work out movement diffs
-                float tx = r.X;
-                float ty = r.Y;
-
-                switch (targetBearing)
+                // GUN ANIMATIONS
+                if (gunAnimationProgress > 0.001f)
                 {
-                    case Bearing.NORTH:
-                        ty -= stepSize;
-                        break;
-                    case Bearing.SOUTH:
-                        ty += stepSize;
-                        break;
-                    case Bearing.EAST:
-                        tx += stepSize;
-                        break;
-                    case Bearing.WEST:
-                        tx -= stepSize;
-                        break;
+                    gunAnimationProgress -= gunAnimationDelta;
+                    if (gunAnimationProgress < 0.001f) gunAnimationProgress = 0.0f;
                 }
 
-                //apply movement diffs
-                r.X = (int)tx;
-                r.Y = (int)ty;
-
-                // IF the new mask position does not collide, apply the movement diffs to the position
-
-
-                if (!WallManager.Instance.collides(r) && !(TankManager.Instance.tankCollisionWithTank(r, this)) )
+                // CHECK FOR direction change
+                if (targetBearing != Bearing.NONE)
                 {
-                    position.X = tx + r.Width / 2;
-                    position.Y = ty + r.Height / 2;
-                    bearing = targetBearing;
-                }
-                else
-                {
-                    // help with alignment
-                    int ax = (int)Math.Round(tx / 32) * 32;
-                    int ay = (int)Math.Round(ty / 32) * 32;
 
-                    if (Math.Sqrt(Math.Pow(ax - tx, 2) + Math.Pow(ay - ty, 2)) < 10)
+                    // FIRST get current mask
+                    Rectangle r = getCollisionMask();
+
+                    // THEN work out movement diffs
+                    float tx = r.X;
+                    float ty = r.Y;
+
+                    switch (targetBearing)
                     {
-                        tx = ax;
-                        ty = ay;
-
-                        //apply movement diffs
-                        r.X = (int)tx;
-                        r.Y = (int)ty;
-
-                        if (!WallManager.Instance.collides(r) && !(TankManager.Instance.tankCollisionWithTank(r, this)))
-                        {
-                            position.X = tx + r.Width / 2;
-                            position.Y = ty + r.Height / 2;
-                        }
-
-                        bearing = targetBearing;
+                        case Bearing.NORTH:
+                            ty -= stepSize;
+                            break;
+                        case Bearing.SOUTH:
+                            ty += stepSize;
+                            break;
+                        case Bearing.EAST:
+                            tx += stepSize;
+                            break;
+                        case Bearing.WEST:
+                            tx -= stepSize;
+                            break;
                     }
 
+                    //apply movement diffs
+                    r.X = (int)tx;
+                    r.Y = (int)ty;
+
+                    // IF the new mask position does not collide, apply the movement diffs to the position
+
+
+                    if (!WallManager.Instance.collides(r) && !(TankManager.Instance.tankCollisionWithTank(r, this)))
+                    {
+                        position.X = tx + r.Width / 2;
+                        position.Y = ty + r.Height / 2;
+                        bearing = targetBearing;
+                    }
+                    else
+                    {
+                        // help with alignment
+                        int ax = (int)Math.Round(tx / 32) * 32;
+                        int ay = (int)Math.Round(ty / 32) * 32;
+
+                        if (Math.Sqrt(Math.Pow(ax - tx, 2) + Math.Pow(ay - ty, 2)) < 10)
+                        {
+                            tx = ax;
+                            ty = ay;
+
+                            //apply movement diffs
+                            r.X = (int)tx;
+                            r.Y = (int)ty;
+
+                            if (!WallManager.Instance.collides(r) && !(TankManager.Instance.tankCollisionWithTank(r, this)))
+                            {
+                                position.X = tx + r.Width / 2;
+                                position.Y = ty + r.Height / 2;
+                            }
+
+                            bearing = targetBearing;
+                        }
+
+                    }
                 }
+            }
+            else // state == despawning
+            {
+
             }
         }
 
@@ -287,22 +298,24 @@ namespace BattleSiteE.GameObjects
 
         public void handleInput(Manager.InputController inputController)
         {
-            // first reset target bearing
-            targetBearing = Bearing.NONE;
-
-            if (inputController.isKeyPressed(GameKey.UP, ControllingIndex)) targetBearing = Bearing.NORTH;
-            else if (inputController.isKeyPressed(GameKey.DOWN, ControllingIndex)) targetBearing = Bearing.SOUTH;
-            else if (inputController.isKeyPressed(GameKey.LEFT, ControllingIndex)) targetBearing = Bearing.WEST;
-            else if (inputController.isKeyPressed(GameKey.RIGHT, ControllingIndex)) targetBearing = Bearing.EAST;
-            if (inputController.isKeyPressed(GameKey.FIRE, ControllingIndex))
+            if (state == SpawnState.SPAWNED)
             {
-                if (canFire())
+                // first reset target bearing
+                targetBearing = Bearing.NONE;
+
+                if (inputController.isKeyPressed(GameKey.UP, ControllingIndex)) targetBearing = Bearing.NORTH;
+                else if (inputController.isKeyPressed(GameKey.DOWN, ControllingIndex)) targetBearing = Bearing.SOUTH;
+                else if (inputController.isKeyPressed(GameKey.LEFT, ControllingIndex)) targetBearing = Bearing.WEST;
+                else if (inputController.isKeyPressed(GameKey.RIGHT, ControllingIndex)) targetBearing = Bearing.EAST;
+                if (inputController.isKeyPressed(GameKey.FIRE, ControllingIndex))
                 {
-                    BulletManager.Instance.addBullet(Fire());
+                    if (canFire())
+                    {
+                        BulletManager.Instance.addBullet(Fire());
+                    }
                 }
+
             }
-
-
 
         }
     }

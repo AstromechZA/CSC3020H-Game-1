@@ -84,6 +84,7 @@
     <Compile Include="Manager\PlayerState.cs" />
     <Compile Include="Manager\ScreenManager.cs" />
     <Compile Include="Manager\XBoxInputManager.cs" />
+    <Compile Include="Other\SpriteSheet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
