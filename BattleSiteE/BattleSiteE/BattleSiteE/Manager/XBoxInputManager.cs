@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 using BattleSiteE.Manager;
+using System.Diagnostics;
 
 namespace BattleSiteE.Manager
 {
@@ -44,37 +45,37 @@ namespace BattleSiteE.Manager
         public override bool isKeyDown(GameKey k, PlayerIndex? player)
         {
             Buttons bb = getButtonForAction(k);
+
             if (player.HasValue)
             {
-                return (LastGamepadStates[(int)(player.Value)].IsButtonUp(bb) && LastGamepadStates[(int)(player.Value)].IsButtonUp(bb));    
+                return (LastGamepadStates[(int)(player.Value)].IsButtonUp(bb) && CurrentGamepadStates[(int)(player.Value)].IsButtonDown(bb));    
             }
 
-            return (LastGamepadStates[0].IsButtonUp(bb) && LastGamepadStates[0].IsButtonDown(bb)) ||
-                (LastGamepadStates[1].IsButtonUp(bb) && LastGamepadStates[1].IsButtonDown(bb));
+            return (LastGamepadStates[0].IsButtonUp(bb) && CurrentGamepadStates[0].IsButtonDown(bb)) || (LastGamepadStates[1].IsButtonUp(bb) && CurrentGamepadStates[1].IsButtonDown(bb));
         }
 
         public override bool isKeyPressed(GameKey k, PlayerIndex? player)
         {
             Buttons bb = getButtonForAction(k);
+
             if (player.HasValue)
             {
-                return (LastGamepadStates[(int)(player.Value)].IsButtonDown(bb) && LastGamepadStates[(int)(player.Value)].IsButtonDown(bb));
+                return (LastGamepadStates[(int)(player.Value)].IsButtonDown(bb) && CurrentGamepadStates[(int)(player.Value)].IsButtonDown(bb));
             }
 
-            return (LastGamepadStates[0].IsButtonDown(bb) && LastGamepadStates[0].IsButtonDown(bb)) ||
-                (LastGamepadStates[1].IsButtonDown(bb) && LastGamepadStates[1].IsButtonDown(bb));
+            return (LastGamepadStates[0].IsButtonDown(bb) && CurrentGamepadStates[0].IsButtonDown(bb)) || (LastGamepadStates[1].IsButtonDown(bb) && CurrentGamepadStates[1].IsButtonDown(bb));
         }
 
         public override bool isKeyUp(GameKey k, PlayerIndex? player)
         {
             Buttons bb = getButtonForAction(k);
+
             if (player.HasValue)
             {
-                return (LastGamepadStates[(int)(player.Value)].IsButtonDown(bb) && LastGamepadStates[(int)(player.Value)].IsButtonUp(bb));
+                return (LastGamepadStates[(int)(player.Value)].IsButtonDown(bb) && CurrentGamepadStates[(int)(player.Value)].IsButtonUp(bb));
             }
 
-            return (LastGamepadStates[0].IsButtonDown(bb) && LastGamepadStates[0].IsButtonUp(bb)) ||
-                (LastGamepadStates[1].IsButtonDown(bb) && LastGamepadStates[1].IsButtonUp(bb));
+            return (LastGamepadStates[0].IsButtonDown(bb) && CurrentGamepadStates[0].IsButtonUp(bb)) || (LastGamepadStates[1].IsButtonDown(bb) && CurrentGamepadStates[1].IsButtonUp(bb));
         }
 
         public Buttons getButtonForAction(GameKey k)
