@@ -112,8 +112,8 @@ namespace BattleSiteE.GameScreens
 
         public override void Update(GameTime gameTime, bool coveredByOtherScreen)
         {
-            TankManager.Instance.updateTanks();
-            BulletManager.Instance.updateBullets();
+            TankManager.Instance.updateTanks(gameTime);
+            BulletManager.Instance.updateBullets(gameTime);
 
             base.Update(gameTime, coveredByOtherScreen);
         }

@@ -9,6 +9,8 @@ namespace BattleSiteE.GameObjects.WallTypes
     public class WallDamageable : WallBase
     {
         private static Rectangle sr = new Rectangle(0 * 32, 0 * 32, 32, 32);
+        private int health = 2;
+        private int initialhealth = 2;
 
         public WallDamageable() : base()
         {
@@ -20,6 +22,20 @@ namespace BattleSiteE.GameObjects.WallTypes
             return sr;
         }
 
-        
+
+
+        public bool damage(int p)
+        {
+            health -= p;
+            return (health <= 0);
+        }
+
+        public bool isDamaged()
+        {
+            return health < initialhealth;
+        }
+
+
+
     }
 }

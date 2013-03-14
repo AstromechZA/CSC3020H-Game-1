@@ -40,11 +40,11 @@ namespace BattleSiteE.GameObjects.Managers
             explosionTex = et;
         }
 
-        public void updateBullets()
+        public void updateBullets(GameTime gametime)
         {
             for (int i = 0; i < bullets.Count; i++)
             {
-                bullets[i].update();
+                bullets[i].Update(gametime);
                 if (bullets[i].markedForDeletion) bullets.Remove(bullets[i]);
             }
 

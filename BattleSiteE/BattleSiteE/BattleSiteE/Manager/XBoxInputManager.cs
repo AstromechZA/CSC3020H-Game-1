@@ -43,20 +43,62 @@ namespace BattleSiteE.Manager
 
         public override bool isKeyDown(GameKey k, PlayerIndex? player)
         {
-            return false;
+            Buttons bb = getButtonForAction(k);
+            if (player.HasValue)
+            {
+                return (LastGamepadStates[(int)(player.Value)].IsButtonUp(bb) && LastGamepadStates[(int)(player.Value)].IsButtonUp(bb));    
+            }
+
+            return (LastGamepadStates[0].IsButtonUp(bb) && LastGamepadStates[0].IsButtonDown(bb)) ||
+                (LastGamepadStates[1].IsButtonUp(bb) && LastGamepadStates[1].IsButtonDown(bb));
         }
 
         public override bool isKeyPressed(GameKey k, PlayerIndex? player)
         {
-            return false;
+            Buttons bb = getButtonForAction(k);
+            if (player.HasValue)
+            {
+                return (LastGamepadStates[(int)(player.Value)].IsButtonDown(bb) && LastGamepadStates[(int)(player.Value)].IsButtonDown(bb));
+            }
+
+            return (LastGamepadStates[0].IsButtonDown(bb) && LastGamepadStates[0].IsButtonDown(bb)) ||
+                (LastGamepadStates[1].IsButtonDown(bb) && LastGamepadStates[1].IsButtonDown(bb));
         }
 
         public override bool isKeyUp(GameKey k, PlayerIndex? player)
         {
-            return false;
+            Buttons bb = getButtonForAction(k);
+            if (player.HasValue)
+            {
+                return (LastGamepadStates[(int)(player.Value)].IsButtonDown(bb) && LastGamepadStates[(int)(player.Value)].IsButtonUp(bb));
+            }
+
+            return (LastGamepadStates[0].IsButtonDown(bb) && LastGamepadStates[0].IsButtonUp(bb)) ||
+                (LastGamepadStates[1].IsButtonDown(bb) && LastGamepadStates[1].IsButtonUp(bb));
         }
 
-
+        public Buttons getButtonForAction(GameKey k)
+        {
+            switch (k)
+            {
+                case GameKey.BACK:
+                    return Buttons.Back;
+                case GameKey.SELECT:
+                    return Buttons.A;
+                case GameKey.FIRE:
+                    return Buttons.RightTrigger;
+                case GameKey.UP:
+                    return Buttons.DPadUp;
+                case GameKey.DOWN:
+                    return Buttons.DPadDown;
+                case GameKey.LEFT:
+                    return Buttons.DPadLeft;
+                case GameKey.RIGHT:
+                    return Buttons.DPadRight;
+                default:
+                    return Buttons.BigButton;
+            }
+        }
        
 
 

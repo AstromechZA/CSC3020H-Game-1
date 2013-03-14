@@ -20,7 +20,7 @@ namespace BattleSiteE.GameObjects
         private Bearing targetBearing = Bearing.NONE;
 
         // MOVEMENT CONSTS
-        private const float bulletv = 10.0f;
+        private const float bulletv = 14.0f;
         private TimeSpan timebtwFire = TimeSpan.FromSeconds(1);
 
         private PlayerIndex controllingIndex;
@@ -37,11 +37,11 @@ namespace BattleSiteE.GameObjects
             this.controllingIndex = controllingIndex;
         }       
 
-        public override void Update()
+        public override void Update(GameTime gametime)
         {
             if (spawnState == SpawnState.SPAWNING)
             {
-                spawnProgress += 0.01f;
+                spawnProgress += 0.03f;
                 if (spawnProgress >= 1.0f) spawnState = SpawnState.SPAWNED;
             }
             else if (spawnState == SpawnState.SPAWNED)
@@ -63,6 +63,7 @@ namespace BattleSiteE.GameObjects
                     // THEN work out movement diffs
                     float tx = r.X;
                     float ty = r.Y;
+
 
                     switch (targetBearing)
                     {

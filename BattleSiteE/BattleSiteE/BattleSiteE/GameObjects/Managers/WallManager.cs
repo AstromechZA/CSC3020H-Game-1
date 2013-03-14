@@ -25,6 +25,12 @@ namespace BattleSiteE.GameObjects.Managers
         }
 
         private Texture2D wallTextures;
+
+
+        private static Rectangle blank = new Rectangle(32, 32, 32, 32);
+
+        private static Rectangle damageRect = new Rectangle(0, 32, 32, 32);
+        
         private WallBase[,] wallmap = new WallBase[1, 1] { { null } };
 
 
@@ -157,7 +163,6 @@ namespace BattleSiteE.GameObjects.Managers
             int my = wallmap.GetLength(0);
             int mx = wallmap.GetLength(1);
 
-            Rectangle blank = new Rectangle(32, 32, 32, 32);
 
             //build tile set data
             for (int y = 0; y < my; y++)
@@ -178,6 +183,17 @@ namespace BattleSiteE.GameObjects.Managers
                         Rectangle dst = new Rectangle(x * 32, y * 32, 32, 32);
                         sb.Draw(wallTextures, dst, r, Color.White);
                     }
+
+                    if (wallmap[y,x] != null && wallmap[y, x].GetType() == typeof(WallDamageable))
+                    {
+                        WallDamageable wd = (WallDamageable)wallmap[y, x];
+                        if (wd.isDamaged())
+                        {
+                            Rectangle dst = new Rectangle(x * 32, y * 32, 32, 32);
+                            sb.Draw(wallTextures, dst, damageRect, Color.White);                    
+                        }
+                    }
+
                 }
             }
         }
@@ -195,7 +211,12 @@ namespace BattleSiteE.GameObjects.Managers
                 {
                     WallBase wb = wallmap[y, x];
                     if (wb != null)
-                        if (wb.GetType() == typeof(WallDamageable)) wallmap[y, x] = null;
+                        if (wb.GetType() == typeof(WallDamageable))
+                        {
+                            WallDamageable wd = (WallDamageable)wallmap[y, x];
+                            if(wd.damage(1)) wallmap[y, x] = null;
+                        }
+                    
                 }
             }
 

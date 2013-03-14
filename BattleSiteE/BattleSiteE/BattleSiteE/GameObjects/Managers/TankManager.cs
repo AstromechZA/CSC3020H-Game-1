@@ -54,9 +54,9 @@ namespace BattleSiteE.GameObjects.Managers
             return controlledTanks;
         }
 
-        public void updateTanks()
+        public void updateTanks(GameTime gametime)
         {
-            foreach (TankBase t in controlledTanks) t.Update(); 
+            foreach (TankBase t in controlledTanks) t.Update(gametime); 
         }
 
         public TankBase getCollidingTank(Rectangle collisionMask)

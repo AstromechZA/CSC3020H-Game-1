@@ -45,7 +45,7 @@ namespace BattleSiteE.GameObjects
         #endregion
 
 
-        protected const float stepSize = 2.0f;
+        protected const float stepSize = 3.5f;
 
         protected Vector2 position;
         protected Bearing bearing;
@@ -55,7 +55,7 @@ namespace BattleSiteE.GameObjects
 
         protected float gunAnimationProgress = 0.0f;
 
-        public abstract void Update();
+        public abstract void Update(GameTime gametime);
 
         public void set_texture(Texture2D t)
         {
@@ -137,7 +137,7 @@ namespace BattleSiteE.GameObjects
                     tanktexture,
                     new Rectangle((int)(position.X - 32 + g_offset_x + e_offset_x), (int)(position.Y - 32 + g_offset_y + e_offset_y), 64, 64),
                     explosionFrames[index],
-                    tint,
+                    Color.White,
                     0.0f,
                     new Vector2(0, 0),
                     e_effect,
@@ -155,16 +155,7 @@ namespace BattleSiteE.GameObjects
             return new Rectangle((int)(position.X - 31), (int)(position.Y - 31), 62, 62);
         }
 
-        public static Bearing randomBearing()
-        {
-            switch (new Random().Next(0, 4))
-            {
-                case 0: return Bearing.NORTH;
-                case 1: return Bearing.SOUTH;
-                case 2: return Bearing.EAST;
-                default: return Bearing.WEST;
-            }
-        }
+        
 
     }
 }

@@ -47,7 +47,7 @@ namespace BattleSiteE.GameObjects
 
 
 
-        public Bullet(PlayerTank firer, Vector2 firedFrom, Bearing b, float bulletv)
+        public Bullet(TankBase firer, Vector2 firedFrom, Bearing b, float bulletv)
         {
             position = new Vector2(firedFrom.X, firedFrom.Y);
             bearing = b;
@@ -62,7 +62,7 @@ namespace BattleSiteE.GameObjects
         }
 
 
-        public void update()
+        public void Update(GameTime gametime)
         {
 
 

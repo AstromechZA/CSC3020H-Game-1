@@ -99,8 +99,7 @@ namespace BattleSiteE.Manager
 
             // if we are busy exiting
             if (isExiting)
-            {
-                Debug.WriteLine("" + this.GetType() + " is Exiting");
+            { 
                 // must transition off
                 state = State.TransitioningOff;
 
