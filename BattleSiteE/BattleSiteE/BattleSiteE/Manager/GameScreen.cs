@@ -21,7 +21,7 @@ namespace BattleSiteE.Manager
         ScreenManager screenManager;
 
         //transitions
-        State state = State.TransitioningOn;
+        protected State state = State.TransitioningOn;
         public bool isExiting = false;
         
 

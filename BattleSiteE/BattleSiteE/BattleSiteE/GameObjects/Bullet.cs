@@ -86,6 +86,10 @@ namespace BattleSiteE.GameObjects
                 TankBase rtc = TankManager.Instance.getCollidingTank(r);
                 if (rtc != null && rtc != parentTank)
                 {
+                    if (rtc.GetType() == typeof(AITank))
+                    {
+                        ((AITank)rtc).damage();
+                    }
                     exploding = true;
                 }
 
@@ -93,6 +97,7 @@ namespace BattleSiteE.GameObjects
                 Bullet rbc = BulletManager.Instance.getCollidingBulletWithBullet(r, this);
                 if (rbc != null)
                 {
+                    rbc.exploding = true;
                     exploding = true;
                 }
 

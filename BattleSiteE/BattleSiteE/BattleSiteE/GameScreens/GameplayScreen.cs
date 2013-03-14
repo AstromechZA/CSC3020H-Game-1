@@ -21,6 +21,8 @@ namespace BattleSiteE.GameScreens
 
         Texture2D gamelayout;
 
+        private bool gameStarted = false;
+
         
         public GameplayScreen()
         {
@@ -53,11 +55,7 @@ namespace BattleSiteE.GameScreens
             TankManager.Instance.setTankTexture(contentMan.Load<Texture2D>("tanks"));
             TankManager.Instance.loadSpawnPoints(gamelayout);
 
-            TankManager.Instance.addTank(new PlayerTank(Color.LightGreen, 64, 64, Bearing.EAST, PlayerIndex.One));
-            TankManager.Instance.addTank(new PlayerTank(Color.LightSkyBlue, 64, 128, Bearing.EAST, PlayerIndex.Two));
-
-            TankManager.Instance.addTank(new AITank(1000,64));
-
+            
             WallManager.Instance.setTextureMap(contentMan.Load<Texture2D>("minitileset"));
             WallManager.Instance.makeWalls(gamelayout);
 
@@ -103,8 +101,6 @@ namespace BattleSiteE.GameScreens
             foreach (TankBase t in TankManager.Instance.get_tankList())
             {
                 if (t.GetType() == typeof(PlayerTank)) ((PlayerTank)t).handleInput(ScreenManager.InputController);
-
-
             }
 
             
@@ -114,6 +110,15 @@ namespace BattleSiteE.GameScreens
         {
             TankManager.Instance.updateTanks(gameTime);
             BulletManager.Instance.updateBullets(gameTime);
+
+            if (!gameStarted && state == State.TransitioningOn && TransitionAlpha > 0.7)
+            {
+                TankManager.Instance.addTank(new PlayerTank(Color.LightGreen, 64, 64, Bearing.EAST, PlayerIndex.One));
+                TankManager.Instance.addTank(new PlayerTank(Color.LightSkyBlue, 64, 128, Bearing.EAST, PlayerIndex.Two));
+
+                TankManager.Instance.addTank(new AITank(1000, 64));
+                gameStarted = true;
+            }
 
             base.Update(gameTime, coveredByOtherScreen);
         }

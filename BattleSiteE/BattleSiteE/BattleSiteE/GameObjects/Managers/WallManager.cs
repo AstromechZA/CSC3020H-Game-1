@@ -101,11 +101,24 @@ namespace BattleSiteE.GameObjects.Managers
         public bool collides(Rectangle r)
         {
             Point tl = gridIndex(r.Left, r.Top);
+
+            if (tl.X > wallmap.GetLength(1)) return false;
+            if (tl.Y > wallmap.GetLength(0)) return false;
+
             Point br = gridIndex(r.Right, r.Bottom);
 
-            for (int y = tl.Y; y <= br.Y; y++)
+            if (br.X < 0) return false;
+            if (br.Y < 0) return false;
+
+            int sx = (int)MathHelper.Clamp(tl.X, 0, wallmap.GetLength(1)-1);
+            int sy = (int)MathHelper.Clamp(tl.Y, 0, wallmap.GetLength(0)-1);
+
+            int ex = (int)MathHelper.Clamp(br.X, 0, wallmap.GetLength(1)-1);
+            int ey = (int)MathHelper.Clamp(br.Y, 0, wallmap.GetLength(0)-1);
+
+            for (int y = sy; y <= ey; y++)
             {
-                for (int x = tl.X; x <= br.X; x++)
+                for (int x = sx; x <= ex; x++)
                 {
                     if (wallmap[y, x] != null) return true;
                 }
@@ -118,13 +131,32 @@ namespace BattleSiteE.GameObjects.Managers
         public WallBase getCollidingWall(Vector2 v)
         {
             Point c = gridIndex(v);
+
+            if (c.X > wallmap.GetLength(1)) return null;
+            if (c.Y > wallmap.GetLength(0)) return null;
+            if (c.X < 0) return null;
+            if (c.Y < 0) return null;
+
             return wallmap[c.Y, c.X];
         }
 
         public WallBase getCollidingWall(Rectangle r)
         {
             Point tl = gridIndex(r.Left, r.Top);
+
+            if (tl.X > wallmap.GetLength(1)) return null;
+            if (tl.Y > wallmap.GetLength(0)) return null;
+
             Point br = gridIndex(r.Right, r.Bottom);
+
+            if (br.X < 0) return null;
+            if (br.Y < 0) return null;
+
+            int sx = (int)MathHelper.Clamp(tl.X, 0, wallmap.GetLength(1) - 1);
+            int sy = (int)MathHelper.Clamp(tl.Y, 0, wallmap.GetLength(0) - 1);
+
+            int ex = (int)MathHelper.Clamp(br.X, 0, wallmap.GetLength(1) - 1);
+            int ey = (int)MathHelper.Clamp(br.Y, 0, wallmap.GetLength(0) - 1);
 
             for (int y = tl.Y; y <= br.Y; y++)
             {

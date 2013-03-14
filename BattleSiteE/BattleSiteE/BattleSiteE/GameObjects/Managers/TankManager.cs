@@ -56,7 +56,12 @@ namespace BattleSiteE.GameObjects.Managers
 
         public void updateTanks(GameTime gametime)
         {
-            foreach (TankBase t in controlledTanks) t.Update(gametime); 
+
+            for (int i = 0; i < controlledTanks.Count; i++)
+            {
+                controlledTanks[i].Update(gametime);
+                if (controlledTanks[i].GetType() == typeof(AITank) && ((AITank)controlledTanks[i]).markedForDeletion) controlledTanks.Remove(controlledTanks[i]);
+            }
         }
 
         public TankBase getCollidingTank(Rectangle collisionMask)
@@ -119,5 +124,6 @@ namespace BattleSiteE.GameObjects.Managers
                 }
             }
         }
+
     }
 }

@@ -152,6 +152,7 @@ namespace BattleSiteE.GameObjects
 
         public override Rectangle getCollisionMask()
         {
+            if (spawnState == SpawnState.UNSPAWNING) return Rectangle.Empty;
             return new Rectangle((int)(position.X - 31), (int)(position.Y - 31), 62, 62);
         }
 

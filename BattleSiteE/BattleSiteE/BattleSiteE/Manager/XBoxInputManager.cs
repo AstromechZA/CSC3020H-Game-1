@@ -83,7 +83,7 @@ namespace BattleSiteE.Manager
             switch (k)
             {
                 case GameKey.BACK:
-                    return Buttons.Back;
+                    return Buttons.B;
                 case GameKey.SELECT:
                     return Buttons.A;
                 case GameKey.FIRE:
