@@ -132,7 +132,7 @@ namespace BattleSiteE.GameObjects
             }
             else // state == despawning
             {
-                spawnProgress -= 0.03f;
+                spawnProgress -= 0.075f;
                 if (spawnProgress < 0.0f) markedForDeletion = true;
 
 

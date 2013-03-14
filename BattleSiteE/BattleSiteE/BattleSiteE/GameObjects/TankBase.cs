@@ -28,20 +28,30 @@ namespace BattleSiteE.GameObjects
         protected static Rectangle treadhorizantal = new Rectangle(0, 128, 64, 64);
         protected static Rectangle treadvertical = new Rectangle(64, 128, 64, 64);
 
-        protected static Rectangle[] explosionFramesHorizantal = {
+        protected static Rectangle[] gunFireFramesHorizantal = {
                                                          new Rectangle     (0, 192, 64, 64),
                                                          new Rectangle     (64, 192, 64, 64),
                                                          new Rectangle     (128, 192, 64, 64),
                                                          new Rectangle     (192, 192, 64, 64),
                                                          new Rectangle     (256, 192, 64, 64)
                                                      };
-        protected static Rectangle[] explosionFramesVertical = {
+        protected static Rectangle[] gunFireFramesVertical = {
                                                          new Rectangle     (0, 256, 64, 64),
                                                          new Rectangle     (64, 256, 64, 64),
                                                          new Rectangle     (128, 256, 64, 64),
                                                          new Rectangle     (192, 256, 64, 64),
                                                          new Rectangle     (256, 256, 64, 64)
                                                      };
+        protected static Rectangle[] deathFrames = {
+                                                         new Rectangle     (0, 320, 64, 64),
+                                                         new Rectangle     (64, 320, 64, 64),
+                                                         new Rectangle     (128, 320, 64, 64),
+                                                         new Rectangle     (192, 320, 64, 64),
+                                                         new Rectangle     (256, 320, 64, 64)
+                                                     };
+
+
+
         #endregion
 
 
@@ -75,7 +85,7 @@ namespace BattleSiteE.GameObjects
             float e_offset_y = 0;
             SpriteEffects e_effect = SpriteEffects.None;
 
-            Rectangle[] explosionFrames = explosionFramesHorizantal;
+            Rectangle[] explosionFrames = gunFireFramesHorizantal;
 
 
             switch (bearing)
@@ -86,7 +96,7 @@ namespace BattleSiteE.GameObjects
                     t_gun = gunright;
                     g_offset_x = -(gunAnimationProgress * 10);
                     e_offset_x = 28;
-                    explosionFrames = explosionFramesHorizantal;
+                    explosionFrames = gunFireFramesHorizantal;
                     break;
                 case Bearing.WEST:
                     t_tread = treadhorizantal;
@@ -94,7 +104,7 @@ namespace BattleSiteE.GameObjects
                     t_gun = gunleft;
                     g_offset_x = +(gunAnimationProgress * 10);
                     e_offset_x = -28;
-                    explosionFrames = explosionFramesHorizantal;
+                    explosionFrames = gunFireFramesHorizantal;
                     e_effect = SpriteEffects.FlipHorizontally;
                     break;
                 case Bearing.NORTH:
@@ -103,7 +113,7 @@ namespace BattleSiteE.GameObjects
                     t_gun = gunup;
                     e_offset_y = -28;
                     g_offset_y = +(gunAnimationProgress * 10);
-                    explosionFrames = explosionFramesVertical;
+                    explosionFrames = gunFireFramesVertical;
                     e_effect = SpriteEffects.FlipVertically;
                     break;
                 case Bearing.SOUTH:
@@ -112,12 +122,12 @@ namespace BattleSiteE.GameObjects
                     t_gun = gundown;
                     e_offset_y = 28;
                     g_offset_y = -(gunAnimationProgress * 10);
-                    explosionFrames = explosionFramesVertical;
+                    explosionFrames = gunFireFramesVertical;
                     break;
             }
 
             float alphamul = 1.0f;
-            if (spawnState == SpawnState.SPAWNING)
+            if (spawnState != SpawnState.SPAWNED)
             {
                 alphamul *= (float)(Math.Pow(Math.Sin(spawnProgress * 20), 2)) * spawnProgress + spawnProgress / 2;
             }
@@ -145,6 +155,12 @@ namespace BattleSiteE.GameObjects
 
 
             }
+
+            if (spawnState == SpawnState.UNSPAWNING)
+            {
+                spriteBatch.Draw(tanktexture, new Rectangle((int)(position.X - 32), (int)(position.Y - 32), 64, 64), deathFrames[(int)(Math.Floor(spawnProgress * 4.5))], Color.White);
+            }
+
 
 
 
