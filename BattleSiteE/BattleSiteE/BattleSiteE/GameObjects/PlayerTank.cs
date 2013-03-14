@@ -92,7 +92,6 @@ namespace BattleSiteE.GameObjects
                     {
                         position.X = tx + r.Width / 2;
                         position.Y = ty + r.Height / 2;
-                        bearing = targetBearing;
                     }
                     else
                     {
@@ -115,10 +114,11 @@ namespace BattleSiteE.GameObjects
                                 position.Y = ty + r.Height / 2;
                             }
 
-                            bearing = targetBearing;
                         }
 
                     }
+
+                    bearing = targetBearing;
                 }
             }
             else // state == despawning

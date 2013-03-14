@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 
 namespace BattleSiteE.GameObjects.Managers
 {
@@ -22,6 +23,8 @@ namespace BattleSiteE.GameObjects.Managers
         private List<Bullet> bullets;
         private Texture2D bulletTex;
         private Texture2D explosionTex;
+        private SoundEffect fireSound;
+        private SoundEffect impactSound;
 
         public BulletManager()
         {
@@ -30,6 +33,7 @@ namespace BattleSiteE.GameObjects.Managers
 
         public void addBullet(Bullet p)
         {
+            fireSound.Play();
             p.setTextures(bulletTex, explosionTex);
             bullets.Add(p);
         }
@@ -42,10 +46,14 @@ namespace BattleSiteE.GameObjects.Managers
 
         public void updateBullets(GameTime gametime)
         {
+
             for (int i = 0; i < bullets.Count; i++)
             {
                 bullets[i].Update(gametime);
-                if (bullets[i].markedForDeletion) bullets.Remove(bullets[i]);
+                if (bullets[i].markedForDeletion)
+                {
+                    bullets.Remove(bullets[i]);
+                }
             }
 
         }
@@ -82,6 +90,22 @@ namespace BattleSiteE.GameObjects.Managers
         internal void clear()
         {
             instance = new BulletManager();
+        }
+
+        public void setFireSound(SoundEffect soundEffect)
+        {
+            fireSound = soundEffect;
+        }
+
+        public void setImpactSound(SoundEffect ims)
+        {
+            impactSound = ims;
+            
+        }
+
+        public void requestImpactSound()
+        {
+            impactSound.Play(0.2f, 0.0f, 0.0f);
         }
     }
 }

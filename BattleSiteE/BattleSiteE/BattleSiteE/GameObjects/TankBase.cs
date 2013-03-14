@@ -57,7 +57,7 @@ namespace BattleSiteE.GameObjects
 
         protected const float stepSize = 3.5f;
 
-        protected Vector2 position;
+        public Vector2 position;
         protected Bearing bearing;
         protected SpawnState spawnState = SpawnState.SPAWNING;
         protected Color tint = Color.White;

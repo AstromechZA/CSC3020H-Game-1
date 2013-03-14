@@ -11,6 +11,7 @@ using System.Diagnostics;
 using BattleSiteE.GameObjects;
 using BattleSiteE.GameObjects.Managers;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 
 namespace BattleSiteE.GameScreens
 {
@@ -22,6 +23,8 @@ namespace BattleSiteE.GameScreens
         Texture2D gamelayout;
 
         private bool gameStarted = false;
+
+        SoundEffect cannonShot;
 
         
         public GameplayScreen()
@@ -54,13 +57,14 @@ namespace BattleSiteE.GameScreens
 
             TankManager.Instance.setTankTexture(contentMan.Load<Texture2D>("tanks"));
             TankManager.Instance.loadSpawnPoints(gamelayout);
-
             
             WallManager.Instance.setTextureMap(contentMan.Load<Texture2D>("minitileset"));
             WallManager.Instance.makeWalls(gamelayout);
 
             BulletManager.Instance.setTexture(contentMan.Load<Texture2D>("bullets"), contentMan.Load<Texture2D>("bulletex"));
-            
+            BulletManager.Instance.setFireSound( contentMan.Load<SoundEffect>("tank") );
+            BulletManager.Instance.setImpactSound(contentMan.Load<SoundEffect>("impact"));
+
 
         }
 
@@ -108,16 +112,23 @@ namespace BattleSiteE.GameScreens
 
         public override void Update(GameTime gameTime, bool coveredByOtherScreen)
         {
-            TankManager.Instance.updateTanks(gameTime);
-            BulletManager.Instance.updateBullets(gameTime);
 
             if (!gameStarted && state == State.TransitioningOn && TransitionAlpha > 0.7)
             {
                 TankManager.Instance.addTank(new PlayerTank(Color.LightGreen, 64, 64, Bearing.EAST, PlayerIndex.One));
                 TankManager.Instance.addTank(new PlayerTank(Color.LightSkyBlue, 64, 128, Bearing.EAST, PlayerIndex.Two));
 
-                TankManager.Instance.addTank(new AITank(1000, 64));
+                //TankManager.Instance.addTank(new AITank(1000, 64));
+
+
+
                 gameStarted = true;
+            }
+
+            if (gameStarted)
+            {
+                TankManager.Instance.updateTanks(gameTime);
+                BulletManager.Instance.updateBullets(gameTime);
             }
 
             base.Update(gameTime, coveredByOtherScreen);

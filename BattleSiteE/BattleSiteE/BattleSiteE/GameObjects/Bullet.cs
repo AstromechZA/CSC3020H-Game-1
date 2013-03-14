@@ -105,6 +105,10 @@ namespace BattleSiteE.GameObjects
             else
             {
                 // EXPLODIIIINGGGG
+                if (explosionProgress == 0.0f)
+                {
+                    BulletManager.Instance.requestImpactSound();
+                }
 
                 explosionProgress += 0.1f;
                 if (explosionProgress > 1.0f) markedForDeletion = true;

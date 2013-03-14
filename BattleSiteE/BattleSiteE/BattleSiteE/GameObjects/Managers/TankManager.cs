@@ -26,6 +26,10 @@ namespace BattleSiteE.GameObjects.Managers
 
         private List<Point> playerSpawnPoints = new List<Point>();
         private List<Point> AISpawnPoints = new List<Point>();
+        private Queue<PlayerTank> tanksToBeRespawned = new Queue<PlayerTank>();
+        private int aiTankQueue = 2;
+
+        private Random random = new Random();
 
         public TankManager()
         {
@@ -60,7 +64,29 @@ namespace BattleSiteE.GameObjects.Managers
             for (int i = 0; i < controlledTanks.Count; i++)
             {
                 controlledTanks[i].Update(gametime);
-                if (controlledTanks[i].GetType() == typeof(AITank) && ((AITank)controlledTanks[i]).markedForDeletion) controlledTanks.Remove(controlledTanks[i]);
+                if (controlledTanks[i].GetType() == typeof(AITank) && ((AITank)controlledTanks[i]).markedForDeletion)
+                {                   
+                    controlledTanks.Remove(controlledTanks[i]);
+                    aiTankQueue++;
+                }
+            }
+
+            if (aiTankQueue > 0)
+            {
+                bool done = false;
+                while (!done)
+                {
+                    int i = random.Next(0, AISpawnPoints.Count);
+                    Point p = AISpawnPoints[i];
+                    Rectangle rect = new Rectangle(p.X, p.Y, 64, 64);
+
+                    if (getCollidingTank(rect) != null) continue;
+
+                    addTank(new AITank(p.X+32,p.Y+32));
+                    aiTankQueue--;
+                    done = true;
+                }
+
             }
         }
 

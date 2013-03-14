@@ -14,7 +14,6 @@ namespace BattleSiteE.GameObjects
         private DateTime lastFired;
         private DateTime nextFireQ;
         private TimeSpan timebtwnshots = TimeSpan.FromSeconds(2);
-        private int initialhealth = 1;
         private int health = 1;
         public bool markedForDeletion = false;
         
@@ -132,6 +131,12 @@ namespace BattleSiteE.GameObjects
             }
             else // state == despawning
             {
+                if (spawnProgress == 1.0f)
+                {
+                    Rectangle r = new Rectangle((int)position.X - 52, (int)position.Y - 52, 104, 104);
+                    WallManager.Instance.damage(r);
+                }
+
                 spawnProgress -= 0.075f;
                 if (spawnProgress < 0.0f) markedForDeletion = true;
 
