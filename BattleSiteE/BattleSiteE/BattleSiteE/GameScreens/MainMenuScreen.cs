@@ -7,6 +7,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using System.Diagnostics;
+using BattleSiteE.GameObjects.Managers;
+using Microsoft.Xna.Framework.Audio;
 
 namespace BattleSiteE.GameScreens
 {
@@ -18,17 +20,17 @@ namespace BattleSiteE.GameScreens
         SpriteFont menuFont;
 
         String[] mainMenuItems = {
-                                    "SINGLEPLAYER",
-                                    "MULTIPLAYER",
-                                    "HIGH SCORES",
+                                    "TWO PLAYER",
+                                    "FOUR PLAYER",
                                     "EXIT"
                                 };
         int selectedItem = 0;
+        bool firstupdate = true;
 
         private static Rectangle menuTopRect = new Rectangle(0, 0, 300, 11);
         private static Rectangle menuButtonSelRect = new Rectangle(0, 11, 300, 25);
         private static Rectangle menuButtonNormRect = new Rectangle(0, 36, 300, 25);
-        private static Rectangle menuBottomRect = new Rectangle(0, 89, 300, 11);
+        private static Rectangle menuBottomRect = new Rectangle(0, 89, 300, 11);        
 
         public MainMenuScreen()
         {
@@ -44,7 +46,11 @@ namespace BattleSiteE.GameScreens
             titleTexture = contentMan.Load<Texture2D>("gamehead");
             menuPartsTextures = contentMan.Load<Texture2D>("menuparts");
             menuFont = contentMan.Load<SpriteFont>("menufont");
+
+            
+
         }
+
 
         public override void UnloadContent()
         {
@@ -59,10 +65,10 @@ namespace BattleSiteE.GameScreens
             sb.Begin();
 
             sb.Draw(titleTexture,
-                new Microsoft.Xna.Framework.Rectangle(20, 20, 510, 197),
+                new Microsoft.Xna.Framework.Rectangle(385, 20, 510, 197),
                 Color.White * TransitionAlpha);
 
-            Point menutopleft = new Point(125, 240);
+            Point menutopleft = new Point(490, 320);
 
             sb.Draw(menuPartsTextures, new Rectangle(menutopleft.X, menutopleft.Y - 11, 300, 11), menuTopRect, Color.White * (TransitionAlpha));
 
@@ -125,11 +131,19 @@ namespace BattleSiteE.GameScreens
                     ScreenManager.ExitAll();
                     ScreenManager.AddScreen(new GameplayScreen());                    
                 }
-                else if (selectedItem == 3) ScreenManager.AddScreen(new ExitConfirmationScreen());
+                else if (selectedItem == 2) ScreenManager.AddScreen(new ExitConfirmationScreen());
             }
 
         }
 
-
+        public override void Update(GameTime gameTime, bool coveredByOtherScreen)
+        {
+            if (firstupdate)
+            {
+                MusicManager.Instance.startTrack("menumusic", 1000);
+                firstupdate = false;
+            }
+            base.Update(gameTime, coveredByOtherScreen);
+        }
     }
 }

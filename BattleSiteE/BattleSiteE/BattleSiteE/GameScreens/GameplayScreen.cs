@@ -23,10 +23,7 @@ namespace BattleSiteE.GameScreens
         Texture2D gamelayout;
 
         private bool gameStarted = false;
-
-        SoundEffect cannonShot;
-
-        
+                
         public GameplayScreen()
         {
             TransitionOnTime = TimeSpan.FromSeconds(1);
@@ -42,7 +39,13 @@ namespace BattleSiteE.GameScreens
             BulletManager bm = BulletManager.Instance;
             bm.clear();
 
+            MusicManager.Instance.startTrack("gamemusic", 1000);
+
+            ScoreManager.Instance.clear();
+
         }
+
+        
 
        
             
@@ -97,6 +100,7 @@ namespace BattleSiteE.GameScreens
             if (ScreenManager.InputController.isKeyDown(GameKey.BACK, null))
             {
                 ScreenManager.ExitAll();
+                MusicManager.Instance.stop(3000);
                 ScreenManager.AddScreen(new MenuBackgroundScreen());
                 ScreenManager.AddScreen(new MainMenuScreen());
                 return;
@@ -114,13 +118,8 @@ namespace BattleSiteE.GameScreens
         {
 
             if (!gameStarted && state == State.TransitioningOn && TransitionAlpha > 0.7)
-            {
-                TankManager.Instance.addTank(new PlayerTank(Color.LightGreen, 64, 64, Bearing.EAST, PlayerIndex.One));
-                TankManager.Instance.addTank(new PlayerTank(Color.LightSkyBlue, 64, 128, Bearing.EAST, PlayerIndex.Two));
-
-                //TankManager.Instance.addTank(new AITank(1000, 64));
-
-
+            {                
+                TankManager.Instance.spawnPlayers();
 
                 gameStarted = true;
             }

@@ -6,6 +6,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System.Diagnostics;
+using BattleSiteE.GameObjects.Managers;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 
 
 
@@ -66,6 +69,11 @@ namespace BattleSiteE.Manager
             spriteBatch = new SpriteBatch(GraphicsDevice);
             fpsfont = content.Load<SpriteFont>("fpsfont");
 
+
+            MusicManager.Instance.addTrack("menumusic", content.Load<Song>("menu"));
+
+            MusicManager.Instance.addTrack("gamemusic", content.Load<Song>("viking"));
+
             foreach (GameScreen screen in activeScreens)
             {
                 screen.LoadContent();
@@ -98,6 +106,7 @@ namespace BattleSiteE.Manager
                 framerate = framecount;
                 framecount = 0;
             }
+            MusicManager.Instance.Update();
 
             // Keep a copy of the screens being updated this run, so as to not get confused.
             updateScreens.Clear();

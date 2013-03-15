@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using BattleSiteE.GameObjects;
 using Microsoft.Xna.Framework;
+using System.Diagnostics;
 
 namespace BattleSiteE.GameObjects.Managers
 {
@@ -24,10 +25,9 @@ namespace BattleSiteE.GameObjects.Managers
         Texture2D tanktexture;
         List<TankBase> controlledTanks = new List<TankBase>();
 
-        private List<Point> playerSpawnPoints = new List<Point>();
-        private List<Point> AISpawnPoints = new List<Point>();
-        private Queue<PlayerTank> tanksToBeRespawned = new Queue<PlayerTank>();
-        private int aiTankQueue = 2;
+        private List<Point> spawnPoints = new List<Point>();
+        private List<PlayerIndex> playerTanksToBeRespawned = new List<PlayerIndex>();
+        private int aiTankQueue = 4;
 
         private Random random = new Random();
 
@@ -63,31 +63,63 @@ namespace BattleSiteE.GameObjects.Managers
 
             for (int i = 0; i < controlledTanks.Count; i++)
             {
-                controlledTanks[i].Update(gametime);
-                if (controlledTanks[i].GetType() == typeof(AITank) && ((AITank)controlledTanks[i]).markedForDeletion)
-                {                   
-                    controlledTanks.Remove(controlledTanks[i]);
-                    aiTankQueue++;
-                }
-            }
+                TankBase tb = controlledTanks[i];
+                tb.Update(gametime);
 
-            if (aiTankQueue > 0)
-            {
-                bool done = false;
-                while (!done)
+                if (tb.markedForDeletion)
                 {
-                    int i = random.Next(0, AISpawnPoints.Count);
-                    Point p = AISpawnPoints[i];
-                    Rectangle rect = new Rectangle(p.X, p.Y, 64, 64);
-
-                    if (getCollidingTank(rect) != null) continue;
-
-                    addTank(new AITank(p.X+32,p.Y+32));
-                    aiTankQueue--;
-                    done = true;
+                    if (tb.GetType() == typeof(AITank))
+                    {
+                        controlledTanks.Remove(controlledTanks[i]);
+                        aiTankQueue++;
+                    }
+                    else
+                    {
+                        playerTanksToBeRespawned.Add(((PlayerTank)tb).controllingIndex);
+                        
+                        controlledTanks.Remove(tb);
+                    }
                 }
 
             }
+
+            while (aiTankQueue > 0)
+            {
+                int i = random.Next(0, spawnPoints.Count);
+                Point p = spawnPoints[i];
+                Rectangle rect = new Rectangle(p.X, p.Y, 64, 64);
+
+                if (getCollidingTank(rect) != null) continue;
+
+                addTank(new AITank(p.X+32,p.Y+32));
+                aiTankQueue--;
+            }
+
+            while (playerTanksToBeRespawned.Count > 0)
+            {
+                Debug.WriteLine("player must be spawned!");
+                int ri = random.Next(0, spawnPoints.Count);
+                Point p = spawnPoints[ri];
+                Rectangle rect = new Rectangle(p.X, p.Y, 64, 64);
+
+                if (getCollidingTank(rect) != null) continue;
+
+                PlayerIndex pi = playerTanksToBeRespawned[0];
+
+                Color c;
+                if (pi == PlayerIndex.One) c = Color.LightSteelBlue;
+                else if (pi == PlayerIndex.Two) c = new Color(1.0f, 0.5f, 0.5f);
+                else if (pi == PlayerIndex.Three) c = Color.LightGreen;
+                else c = new Color(1.0f, 1.0f, 0.5f);
+
+                PlayerTank pt = new PlayerTank(c, p.X + 32, p.Y + 32, Bearing.EAST, pi);
+                addTank(pt);
+                playerTanksToBeRespawned.RemoveAt(0);
+            }
+
+
+
+
         }
 
         public TankBase getCollidingTank(Rectangle collisionMask)
@@ -138,18 +170,22 @@ namespace BattleSiteE.GameObjects.Managers
             {
                 for (int x = 0; x < mx; x++)
                 {
-                    if (colors2D[y, x] == Color.Blue)
+                    if (colors2D[y, x] == Color.Red)
                     {
-                        playerSpawnPoints.Add(new Point(x*32, y*32));
-                    }
-                    else if (colors2D[y, x] == Color.Red)
-                    {
-                        AISpawnPoints.Add(new Point(x*32, y*32));
+                        spawnPoints.Add(new Point(x * 32, y * 32));
                     }
 
                 }
             }
         }
 
+
+        public void spawnPlayers()
+        {
+            playerTanksToBeRespawned.Add(PlayerIndex.One);
+            playerTanksToBeRespawned.Add(PlayerIndex.Two);
+            playerTanksToBeRespawned.Add(PlayerIndex.Three);
+            playerTanksToBeRespawned.Add(PlayerIndex.Four);
+        }
     }
 }

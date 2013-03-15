@@ -36,20 +36,41 @@ namespace BattleSiteE.Manager
 
         public override bool isKeyDown(GameKey k, PlayerIndex? player)
         {
-            Keys kk = getKeyForAction(k, player);
-            return (CurrentKeyboardState.IsKeyDown(kk) && LastKeyboardState.IsKeyUp(kk));
+            if (player.HasValue)
+            {
+                Keys kk = getKeyForAction(k, player);
+                return (CurrentKeyboardState.IsKeyDown(kk) && LastKeyboardState.IsKeyUp(kk));
+            }
+            else
+            {
+                return isKeyDown(k, PlayerIndex.One) || isKeyDown(k, PlayerIndex.Two);
+            }
         }
 
         public override bool isKeyPressed(GameKey k, PlayerIndex? player)
         {
-            Keys kk = getKeyForAction(k, player);
-            return (CurrentKeyboardState.IsKeyDown(kk) && LastKeyboardState.IsKeyDown(kk));
+            if (player.HasValue)
+            {
+                Keys kk = getKeyForAction(k, player);
+                return (CurrentKeyboardState.IsKeyDown(kk) && LastKeyboardState.IsKeyDown(kk));
+            }
+            else
+            {
+                return isKeyPressed(k, PlayerIndex.One) || isKeyPressed(k, PlayerIndex.Two);
+            }
         }
 
         public override bool isKeyUp(GameKey k, PlayerIndex? player)
         {
-            Keys kk = getKeyForAction(k, player);
-            return (CurrentKeyboardState.IsKeyUp(kk) && LastKeyboardState.IsKeyDown(kk));
+            if (player.HasValue)
+            {
+                Keys kk = getKeyForAction(k, player);
+                return (CurrentKeyboardState.IsKeyUp(kk) && LastKeyboardState.IsKeyDown(kk));
+            }
+            else
+            {
+                return isKeyUp(k, PlayerIndex.One) || isKeyUp(k, PlayerIndex.Two);
+            }
         }
 
         public Keys getKeyForAction(GameKey k, PlayerIndex? player)
@@ -61,31 +82,41 @@ namespace BattleSiteE.Manager
             {
                 if (player.HasValue && player == PlayerIndex.One) return Keys.W;
                 if (player.HasValue && player == PlayerIndex.Two) return Keys.Up;
-                return Keys.Up;
+                if (player.HasValue && player == PlayerIndex.Three) return Keys.NumPad8;
+                if (player.HasValue && player == PlayerIndex.Four) return Keys.I;
+                return Keys.W;
             }
             if (k == GameKey.DOWN)
             {
                 if (player.HasValue && player == PlayerIndex.One) return Keys.S;
                 if (player.HasValue && player == PlayerIndex.Two) return Keys.Down;
-                return Keys.Down;
+                if (player.HasValue && player == PlayerIndex.Three) return Keys.NumPad5;
+                if (player.HasValue && player == PlayerIndex.Four) return Keys.K;
+                return Keys.S;
             }
             if (k == GameKey.LEFT)
             {
                 if (player.HasValue && player == PlayerIndex.One) return Keys.A;
                 if (player.HasValue && player == PlayerIndex.Two) return Keys.Left;
-                return Keys.Left;
+                if (player.HasValue && player == PlayerIndex.Three) return Keys.NumPad4;
+                if (player.HasValue && player == PlayerIndex.Four) return Keys.J;
+                return Keys.A;
             }
             if (k == GameKey.RIGHT)
             {
                 if (player.HasValue && player == PlayerIndex.One) return Keys.D;
                 if (player.HasValue && player == PlayerIndex.Two) return Keys.Right;
-                return Keys.Right;
+                if (player.HasValue && player == PlayerIndex.Three) return Keys.NumPad4;
+                if (player.HasValue && player == PlayerIndex.Four) return Keys.L;
+                return Keys.D;
             }
             if (k == GameKey.FIRE)
             {
                 if (player.HasValue && player == PlayerIndex.One) return Keys.Space;
-                if (player.HasValue && player == PlayerIndex.Two) return Keys.Enter;
-                return Keys.Enter;
+                if (player.HasValue && player == PlayerIndex.Two) return Keys.NumPad0;
+                if (player.HasValue && player == PlayerIndex.Three) return Keys.Enter;
+                if (player.HasValue && player == PlayerIndex.Four) return Keys.OemSemicolon;
+                return Keys.Space;
             }
             return Keys.F16;
 

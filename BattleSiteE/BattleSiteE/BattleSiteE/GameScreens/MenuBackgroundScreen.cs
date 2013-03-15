@@ -27,7 +27,17 @@ namespace BattleSiteE.GameScreens
             if (contentMan == null) 
                 contentMan = new ContentManager(ScreenManager.Game.Services, "Content");
 
- 	         backgroundTexture = contentMan.Load<Texture2D>("background");
+            OperatingSystem os = Environment.OSVersion;
+            PlatformID pid = os.Platform;
+            if (pid == PlatformID.Win32NT)
+            {
+                backgroundTexture = contentMan.Load<Texture2D>("backgroundPC");
+            }
+            else
+            {
+                backgroundTexture = contentMan.Load<Texture2D>("backgroundXBOX");
+            }
+
         }
 
         public override void  UnloadContent()

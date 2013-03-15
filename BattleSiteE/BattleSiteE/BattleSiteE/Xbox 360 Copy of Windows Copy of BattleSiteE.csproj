@@ -68,6 +68,8 @@
     <Compile Include="GameObjects\Bullet.cs" />
     <Compile Include="GameObjects\GameObject.cs" />
     <Compile Include="GameObjects\Managers\BulletManager.cs" />
+    <Compile Include="GameObjects\Managers\MusicManager.cs" />
+    <Compile Include="GameObjects\Managers\ScoreManager.cs" />
     <Compile Include="GameObjects\Managers\TankManager.cs" />
     <Compile Include="GameObjects\Managers\WallManager.cs" />
     <Compile Include="GameObjects\PlayerTank.cs" />

@@ -88,8 +88,27 @@ namespace BattleSiteE.GameObjects
                 {
                     if (rtc.GetType() == typeof(AITank))
                     {
-                        ((AITank)rtc).damage();
+                        if (this.parentTank.GetType() == typeof(PlayerTank))
+                        {
+                            ((AITank)rtc).damage();
+                            ScoreManager.Instance.points[(int)(((PlayerTank)this.parentTank).controllingIndex)] += 1;
+                        }
                     }
+
+                    if (rtc.GetType() == typeof(PlayerTank))
+                    {
+                        if (this.parentTank.GetType() == typeof(AITank))
+                        {
+                            ((PlayerTank)rtc).damage();
+                            ScoreManager.Instance.deaths[(int)(((PlayerTank)rtc).controllingIndex)]++;
+                        }
+                        else if (this.parentTank.GetType() == typeof(PlayerTank))
+                        {
+                            ((PlayerTank)rtc).damage();
+                            ScoreManager.Instance.points[(int)(((PlayerTank)this.parentTank).controllingIndex)] += 2;
+                            ScoreManager.Instance.deaths[(int)(((PlayerTank)rtc).controllingIndex)]++;
+                        }
+                    } 
                     exploding = true;
                 }
 

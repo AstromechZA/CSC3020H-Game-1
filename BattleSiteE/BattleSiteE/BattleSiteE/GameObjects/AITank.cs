@@ -14,8 +14,6 @@ namespace BattleSiteE.GameObjects
         private DateTime lastFired;
         private DateTime nextFireQ;
         private TimeSpan timebtwnshots = TimeSpan.FromSeconds(2);
-        private int health = 1;
-        public bool markedForDeletion = false;
         
         private static Random random = new Random();
 
@@ -174,11 +172,10 @@ namespace BattleSiteE.GameObjects
 
         public void damage()
         {
-            if (--health <= 0)
-            {
-                spawnProgress = 1.0f;
-                spawnState = SpawnState.UNSPAWNING;
-            }
+            
+            spawnProgress = 1.0f;
+            spawnState = SpawnState.UNSPAWNING;
+            
         }
     }
 }

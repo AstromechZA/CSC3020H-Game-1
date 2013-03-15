@@ -23,8 +23,7 @@ namespace BattleSiteE.GameObjects
         private const float bulletv = 14.0f;
         private TimeSpan timebtwFire = TimeSpan.FromSeconds(1);
 
-        private PlayerIndex controllingIndex;
-        public PlayerIndex ControllingIndex { get { return controllingIndex; } }
+        public PlayerIndex controllingIndex;
 
         private DateTime lastfire = DateTime.Now;
         
@@ -123,7 +122,14 @@ namespace BattleSiteE.GameObjects
             }
             else // state == despawning
             {
+                if (spawnProgress == 1.0f)
+                {
+                    Rectangle r = new Rectangle((int)position.X - 52, (int)position.Y - 52, 104, 104);
+                    WallManager.Instance.damage(r);
+                }
 
+                spawnProgress -= 0.075f;
+                if (spawnProgress < 0.0f) markedForDeletion = true;
             }
         }
 
@@ -136,6 +142,7 @@ namespace BattleSiteE.GameObjects
         {
             gunAnimationProgress = 1.0f;
             lastfire = DateTime.Now;
+            ScoreManager.Instance.shotsfired[(int)controllingIndex]++;
             return new Bullet(this, position, bearing, bulletv);
 
         }
@@ -158,11 +165,11 @@ namespace BattleSiteE.GameObjects
                 // first reset target bearing
                 targetBearing = Bearing.NONE;
 
-                if (inputController.isKeyPressed(GameKey.UP, ControllingIndex)) targetBearing = Bearing.NORTH;
-                else if (inputController.isKeyPressed(GameKey.DOWN, ControllingIndex)) targetBearing = Bearing.SOUTH;
-                else if (inputController.isKeyPressed(GameKey.LEFT, ControllingIndex)) targetBearing = Bearing.WEST;
-                else if (inputController.isKeyPressed(GameKey.RIGHT, ControllingIndex)) targetBearing = Bearing.EAST;
-                if (inputController.isKeyPressed(GameKey.FIRE, ControllingIndex))
+                if (inputController.isKeyPressed(GameKey.UP, controllingIndex)) targetBearing = Bearing.NORTH;
+                else if (inputController.isKeyPressed(GameKey.DOWN, controllingIndex)) targetBearing = Bearing.SOUTH;
+                else if (inputController.isKeyPressed(GameKey.LEFT, controllingIndex)) targetBearing = Bearing.WEST;
+                else if (inputController.isKeyPressed(GameKey.RIGHT, controllingIndex)) targetBearing = Bearing.EAST;
+                if (inputController.isKeyPressed(GameKey.FIRE, controllingIndex))
                 {
                     if (canFire())
                     {
@@ -172,6 +179,12 @@ namespace BattleSiteE.GameObjects
 
             }
 
+        }
+
+        public void damage()
+        {
+            spawnProgress = 1.0f;
+            spawnState = SpawnState.UNSPAWNING;
         }
     }
 }

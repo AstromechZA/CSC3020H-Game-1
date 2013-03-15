@@ -54,15 +54,14 @@ namespace BattleSiteE.GameObjects
 
         #endregion
 
-
-        protected const float stepSize = 3.5f;
+        protected const float stepSize = 2.0f;
 
         public Vector2 position;
         protected Bearing bearing;
         protected SpawnState spawnState = SpawnState.SPAWNING;
         protected Color tint = Color.White;
         protected float spawnProgress = 0.0f;
-
+        public bool markedForDeletion = false;
         protected float gunAnimationProgress = 0.0f;
 
         public abstract void Update(GameTime gametime);
@@ -158,7 +157,7 @@ namespace BattleSiteE.GameObjects
 
             if (spawnState == SpawnState.UNSPAWNING)
             {
-                spriteBatch.Draw(tanktexture, new Rectangle((int)(position.X - 32), (int)(position.Y - 32), 64, 64), deathFrames[(int)(Math.Floor(spawnProgress * 4.5))], Color.White);
+                spriteBatch.Draw(tanktexture, new Rectangle((int)(position.X - 32), (int)(position.Y - 32), 64, 64), deathFrames[(int)MathHelper.Clamp(((int)Math.Floor(spawnProgress * 4.5)), 0, 4)], Color.White);
             }
 
 

@@ -33,7 +33,7 @@ namespace BattleSiteE.GameObjects.Managers
 
         public void addBullet(Bullet p)
         {
-            fireSound.Play();
+            fireSound.Play(0.2f, 0.0f, 0.0f);
             p.setTextures(bulletTex, explosionTex);
             bullets.Add(p);
         }
@@ -105,7 +105,7 @@ namespace BattleSiteE.GameObjects.Managers
 
         public void requestImpactSound()
         {
-            impactSound.Play(0.2f, 0.0f, 0.0f);
+            impactSound.Play(0.05f, 0.0f, 0.0f);
         }
     }
 }
