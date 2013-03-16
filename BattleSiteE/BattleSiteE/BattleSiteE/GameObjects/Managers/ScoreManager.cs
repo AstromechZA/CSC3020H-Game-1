@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 
 namespace BattleSiteE.GameObjects.Managers
 {
@@ -25,6 +26,9 @@ namespace BattleSiteE.GameObjects.Managers
         private int[] deaths;
         private int[] shotsfired;
 
+        private SoundEffect coinSound;
+        private SoundEffect skullSound;
+
         private static Rectangle main = new Rectangle(0, 0, 128, 720);
         private static Rectangle header = new Rectangle(128, 0, 128, 50);
         private static Rectangle[] playerRects = new Rectangle[]{
@@ -40,6 +44,12 @@ namespace BattleSiteE.GameObjects.Managers
         public ScoreManager()
         {
             clear();
+        }
+
+        public void setSounds(SoundEffect coin, SoundEffect skull)
+        {
+            coinSound = coin;
+            skullSound = skull;
         }
 
         public void clear()
@@ -67,12 +77,14 @@ namespace BattleSiteE.GameObjects.Managers
 
         public void addPoints(int index, int p)
         {
+            coinSound.Play();
             points[index] += p;
             sorti(orderedids);
         }
 
         public void addDeath(int index)
         {
+            skullSound.Play();
             deaths[index] += 1;
         }
 

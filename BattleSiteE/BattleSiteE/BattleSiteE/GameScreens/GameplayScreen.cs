@@ -49,9 +49,10 @@ namespace BattleSiteE.GameScreens
             BulletManager bm = BulletManager.Instance;
             bm.clear();
 
-           // MusicManager.Instance.startTrack("gamemusic", 1000);
+            MusicManager.Instance.startTrack("gamemusic", 1000);
 
             ScoreManager.Instance.clear();
+           
 
             countdown = 4.0f;
         }
@@ -72,6 +73,7 @@ namespace BattleSiteE.GameScreens
 
             ScoreManager.Instance.setInGameTexture(contentMan.Load<Texture2D>("scores"));
             ScoreManager.Instance.setFont(contentMan.Load<SpriteFont>("scorefont"));
+            ScoreManager.Instance.setSounds(contentMan.Load<SoundEffect>("coin"), contentMan.Load<SoundEffect>("skull"));
 
             TankManager.Instance.setTankTexture(contentMan.Load<Texture2D>("tanks"));
             TankManager.Instance.loadSpawnPoints(gamelayout);
