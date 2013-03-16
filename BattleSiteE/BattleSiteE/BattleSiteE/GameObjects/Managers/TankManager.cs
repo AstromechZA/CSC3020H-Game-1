@@ -190,7 +190,7 @@ namespace BattleSiteE.GameObjects.Managers
             //playerTanksToBeRespawned.Add(PlayerIndex.Four);
         }
 
-        public void spawnAI(int count = 1)
+        public void spawnAI(int count)
         {
             aiTankQueue += count;
         }

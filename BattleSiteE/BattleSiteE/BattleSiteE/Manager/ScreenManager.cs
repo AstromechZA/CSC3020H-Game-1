@@ -150,7 +150,7 @@ namespace BattleSiteE.Manager
             }
 
             spriteBatch.Begin();            
-            spriteBatch.DrawString(fpsfont, ""+ framerate, new Vector2(4, 4), Color.White);
+            spriteBatch.DrawString(fpsfont, "FPS: "+ framerate, new Vector2(4, 4), Color.White);
             spriteBatch.End();
 
         }
