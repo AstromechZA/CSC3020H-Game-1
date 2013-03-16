@@ -142,7 +142,7 @@ namespace BattleSiteE.GameObjects
         {
             gunAnimationProgress = 1.0f;
             lastfire = DateTime.Now;
-            ScoreManager.Instance.shotsfired[(int)controllingIndex]++;
+            ScoreManager.Instance.addShotFired((int)controllingIndex);
             return new Bullet(this, position, bearing, bulletv);
 
         }

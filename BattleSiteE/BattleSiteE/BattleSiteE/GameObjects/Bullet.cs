@@ -91,7 +91,7 @@ namespace BattleSiteE.GameObjects
                         if (this.parentTank.GetType() == typeof(PlayerTank))
                         {
                             ((AITank)rtc).damage();
-                            ScoreManager.Instance.points[(int)(((PlayerTank)this.parentTank).controllingIndex)] += 1;
+                            ScoreManager.Instance.addPoints((int)(((PlayerTank)this.parentTank).controllingIndex),1);
                         }
                     }
 
@@ -100,13 +100,13 @@ namespace BattleSiteE.GameObjects
                         if (this.parentTank.GetType() == typeof(AITank))
                         {
                             ((PlayerTank)rtc).damage();
-                            ScoreManager.Instance.deaths[(int)(((PlayerTank)rtc).controllingIndex)]++;
+                            ScoreManager.Instance.addDeath((int)(((PlayerTank)rtc).controllingIndex));
                         }
                         else if (this.parentTank.GetType() == typeof(PlayerTank))
                         {
                             ((PlayerTank)rtc).damage();
-                            ScoreManager.Instance.points[(int)(((PlayerTank)this.parentTank).controllingIndex)] += 2;
-                            ScoreManager.Instance.deaths[(int)(((PlayerTank)rtc).controllingIndex)]++;
+                            ScoreManager.Instance.addPoints((int)(((PlayerTank)this.parentTank).controllingIndex),2);
+                            ScoreManager.Instance.addDeath((int)(((PlayerTank)rtc).controllingIndex));
                         }
                     } 
                     exploding = true;

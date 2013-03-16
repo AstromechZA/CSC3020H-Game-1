@@ -27,7 +27,7 @@ namespace BattleSiteE.GameObjects.Managers
 
         private List<Point> spawnPoints = new List<Point>();
         private List<PlayerIndex> playerTanksToBeRespawned = new List<PlayerIndex>();
-        private int aiTankQueue = 4;
+        private int aiTankQueue = 0;
 
         private Random random = new Random();
 
@@ -182,10 +182,17 @@ namespace BattleSiteE.GameObjects.Managers
 
         public void spawnPlayers()
         {
+
+
             playerTanksToBeRespawned.Add(PlayerIndex.One);
             playerTanksToBeRespawned.Add(PlayerIndex.Two);
-            playerTanksToBeRespawned.Add(PlayerIndex.Three);
-            playerTanksToBeRespawned.Add(PlayerIndex.Four);
+            //playerTanksToBeRespawned.Add(PlayerIndex.Three);
+            //playerTanksToBeRespawned.Add(PlayerIndex.Four);
+        }
+
+        public void spawnAI(int count = 1)
+        {
+            aiTankQueue += count;
         }
     }
 }
