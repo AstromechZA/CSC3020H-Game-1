@@ -79,6 +79,7 @@
     <Compile Include="GameObjects\WallTypes\WallDamageable.cs" />
     <Compile Include="GameObjects\WallTypes\WallPermanent.cs" />
     <Compile Include="GameScreens\ConfirmationScreen.cs" />
+    <Compile Include="GameScreens\EndGameScreen.cs" />
     <Compile Include="GameScreens\ExitConfirmationScreen.cs" />
     <Compile Include="GameScreens\GameplayScreen.cs" />
     <Compile Include="GameScreens\MainMenuScreen.cs" />

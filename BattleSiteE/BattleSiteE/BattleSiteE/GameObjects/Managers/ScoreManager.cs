@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
+using System.Diagnostics;
 
 namespace BattleSiteE.GameObjects.Managers
 {
@@ -26,6 +27,7 @@ namespace BattleSiteE.GameObjects.Managers
         private int[] deaths;
         private int[] shotsfired;
 
+
         private SoundEffect coinSound;
         private SoundEffect skullSound;
 
@@ -40,6 +42,16 @@ namespace BattleSiteE.GameObjects.Managers
 
         private SpriteFont scorefont;
         private Texture2D textureInGame;
+
+        private int winningScore;
+        private bool winned = false;
+        public bool Winned
+        {
+            get
+            {
+                return winned;
+            }
+        }
 
         public ScoreManager()
         {
@@ -70,16 +82,15 @@ namespace BattleSiteE.GameObjects.Managers
             scorefont = sf;
         }
 
-        public void updateInGame()
-        {
-
-        }
-
         public void addPoints(int index, int p)
         {
             coinSound.Play();
             points[index] += p;
             sorti(orderedids);
+            if (points[index] >= winningScore)
+            {
+                winned = true;
+            }
         }
 
         public void addDeath(int index)
@@ -124,7 +135,7 @@ namespace BattleSiteE.GameObjects.Managers
         {
             if (root >= 3) return;
 
-            for (int i = root+1; i < 4; i++)
+            for (int i = root+1; i < orderedids.Length; i++)
             {
                 if (points[unsorted[i]] > points[unsorted[root]])
                 {
@@ -152,6 +163,20 @@ namespace BattleSiteE.GameObjects.Managers
             }
         }
 
-        
+
+
+        public void zeroscores(int ps)
+        {
+            if (ps == 1) orderedids = new int[] {0 };
+            else if (ps == 2) orderedids = new int[] { 0, 1 };
+            else if (ps == 3) orderedids = new int[] { 0,1,2 };
+            else orderedids = new int[] { 0,1,2,3 };
+        }
+
+        public void setTargetScore(int winningScore)
+        {
+            this.winningScore = winningScore;
+        }
+
     }
 }

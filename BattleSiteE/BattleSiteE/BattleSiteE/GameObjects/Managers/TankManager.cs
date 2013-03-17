@@ -180,14 +180,13 @@ namespace BattleSiteE.GameObjects.Managers
         }
 
 
-        public void spawnPlayers()
+        public void spawnPlayers(int count)
         {
 
-
-            playerTanksToBeRespawned.Add(PlayerIndex.One);
-            playerTanksToBeRespawned.Add(PlayerIndex.Two);
-            //playerTanksToBeRespawned.Add(PlayerIndex.Three);
-            //playerTanksToBeRespawned.Add(PlayerIndex.Four);
+            for (int i = 0; i < count; i++)
+            {
+                playerTanksToBeRespawned.Add((PlayerIndex)i);
+            }
         }
 
         public void spawnAI(int count)

@@ -23,6 +23,7 @@ namespace BattleSiteE.GameScreens
         Texture2D gamelayout;
 
         private bool gameStarted = false;
+        private bool gameEnded = false;
         private bool firstupdate = true;
 
         private static Rectangle countdown1 = new Rectangle(0, 0, 256, 256);
@@ -32,10 +33,16 @@ namespace BattleSiteE.GameScreens
         private Texture2D countdownTex;
         private float countdown;
 
+        private int numberOfPlayers;
+        private int winningScore;
 
 
-        public GameplayScreen()
+        public GameplayScreen(int numberofplayers, int winningscore)
         {
+
+            numberOfPlayers = numberofplayers;
+            winningScore = winningscore;
+
             TransitionOnTime = TimeSpan.FromSeconds(1);
             TransitionOffTime = TimeSpan.FromSeconds(1);
 
@@ -49,9 +56,11 @@ namespace BattleSiteE.GameScreens
             BulletManager bm = BulletManager.Instance;
             bm.clear();
 
-            MusicManager.Instance.startTrack("gamemusic", 1000);
+            //MusicManager.Instance.startTrack("gamemusic", 1000);
 
             ScoreManager.Instance.clear();
+            ScoreManager.Instance.zeroscores(numberofplayers);
+            ScoreManager.Instance.setTargetScore(winningScore);
            
 
             countdown = 4.0f;
@@ -108,9 +117,9 @@ namespace BattleSiteE.GameScreens
 
             ScoreManager.Instance.drawInGame(sb);
 
-            if (!gameStarted && countdown > 0)
+            if (!gameStarted && !gameEnded && countdown > 0)
             {
-                float progress = 1 - (countdown % 1);
+                float progress = 1 - (countdown % 1); 
                 int w = (int)(progress * 3000);
                 int h = (int)(progress * 3000);
 
@@ -148,6 +157,7 @@ namespace BattleSiteE.GameScreens
         {
             if (ScreenManager.InputController.isKeyDown(GameKey.BACK, null))
             {
+                ///ScreenManager.AddScreen(new ExitConfirmationScreen());
                 ScreenManager.ExitAll();
                 MusicManager.Instance.stop(3000);
                 ScreenManager.AddScreen(new MenuBackgroundScreen());
@@ -170,11 +180,11 @@ namespace BattleSiteE.GameScreens
         {
             if (firstupdate)
             {
-                TankManager.Instance.spawnPlayers();
+                TankManager.Instance.spawnPlayers(numberOfPlayers);
                 firstupdate = false;
             }
 
-            if (!gameStarted)
+            if (!gameStarted && !gameEnded)
             {
                 if (countdown > 0)
                 {
@@ -188,12 +198,26 @@ namespace BattleSiteE.GameScreens
 
             }
 
+            // DRAW ENDGAME SCREEN
+            if (gameEnded)
+            {
 
-            TankManager.Instance.updateTanks(gameTime);
-            BulletManager.Instance.updateBullets(gameTime);
-            
+            }
+            else
+            {
+                // NORMAL OPS
 
-            ScoreManager.Instance.updateInGame();
+                TankManager.Instance.updateTanks(gameTime);
+                BulletManager.Instance.updateBullets(gameTime);
+
+                if (ScoreManager.Instance.Winned)
+                {
+                    gameEnded = true;
+                    ScreenManager.AddScreen(new EndGameScreen());
+                } 
+
+
+            }
 
             base.Update(gameTime, coveredByOtherScreen);
         }
