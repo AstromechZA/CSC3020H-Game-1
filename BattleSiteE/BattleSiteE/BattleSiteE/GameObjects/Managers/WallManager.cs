@@ -206,9 +206,10 @@ namespace BattleSiteE.GameObjects.Managers
             {
                 for (int x = 0; x < mx; x++)
                 {
-                    Rectangle r = blank;
-                    if (wallmap[y, x] != null) r = wallmap[y,x].get_sprite_rectangle();
+                    // BECAUSE TERNARY
+                    Rectangle r = (wallmap[y, x] != null)? wallmap[y,x].get_sprite_rectangle(): blank;
 
+                    // if not fully transitioned, draw awesome grid transform action things
                     if (transalpha < 0.99f)
                     {
                         Rectangle dst = new Rectangle(x * 32 + (int)(((x%5)*32)*(1-transalpha)), (int)(y * 32 * transalpha + (y%3)*y*(1-transalpha)), 32, 32);
@@ -221,6 +222,7 @@ namespace BattleSiteE.GameObjects.Managers
                         sb.Draw(wallTextures, dst, r, Color.White);
                     }
 
+                    // if wall damagable draw cracked thing if damaged
                     if (wallmap[y,x] != null && wallmap[y, x].GetType() == typeof(WallDamageable))
                     {
                         WallDamageable wd = (WallDamageable)wallmap[y, x];
@@ -235,7 +237,7 @@ namespace BattleSiteE.GameObjects.Managers
             }
         }
 
-
+        // Damage any walls that are in/under the given Rectangle
         public void damage(Rectangle r)
         {
             
@@ -246,6 +248,7 @@ namespace BattleSiteE.GameObjects.Managers
             {
                 for (int x = tl.X; x <= br.X; x++)
                 {
+                    // wall obj
                     WallBase wb = wallmap[y, x];
                     if (wb != null)
                         if (wb.GetType() == typeof(WallDamageable))
