@@ -1,4 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<AssembliesMetrics>
-  <Assembly Assembly="BattleSiteE v1.0.0.0" NTypes="36" NAbstractTypes="5" NILInstructionInAsm="9527" NbLinesOfCodeInAsm="1246" NbLinesOfCommentInAsm="171" PercentageCommentInAsm="12" PercentageCoverageInAsm="-" AfferentCoupling="0" EfferentCoupling="38" RelationalCohesion="3.28" Instability="1" Abstractness="0.14" DistFrMainSeq="0.1" NormDistFrMainSeq="0.14" />
-</AssembliesMetrics>

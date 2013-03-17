@@ -40,7 +40,7 @@ namespace BattleSiteE.GameObjects
         {
             if (spawnState == SpawnState.SPAWNING)
             {
-                spawnProgress += 0.03f;
+                spawnProgress += 0.01f;
                 if (spawnProgress >= 1.0f) spawnState = SpawnState.SPAWNED;
             }
             else if (spawnState == SpawnState.SPAWNED)

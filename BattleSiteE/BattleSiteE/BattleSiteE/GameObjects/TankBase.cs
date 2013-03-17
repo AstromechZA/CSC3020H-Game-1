@@ -58,7 +58,7 @@ namespace BattleSiteE.GameObjects
 
         public Vector2 position;
         protected Bearing bearing;
-        protected SpawnState spawnState = SpawnState.SPAWNING;
+        public SpawnState spawnState = SpawnState.SPAWNING;
         protected Color tint = Color.White;
         protected float spawnProgress = 0.0f;
         public bool markedForDeletion = false;

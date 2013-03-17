@@ -21,7 +21,7 @@ namespace BattleSiteE.Manager
      **/
     public class XBoxInputManager : InputManager
     {
-        public const int MaxInputs = 2;
+        public const int MaxInputs = 4;
 
         public readonly GamePadState[] CurrentGamepadStates;
 

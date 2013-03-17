@@ -100,12 +100,14 @@ namespace BattleSiteE.GameObjects
                         if (this.parentTank.GetType() == typeof(AITank))
                         {
                             ((PlayerTank)rtc).damage();
+                            ScoreManager.Instance.addPoints((int)(((PlayerTank)rtc).controllingIndex),-1);
                             ScoreManager.Instance.addDeath((int)(((PlayerTank)rtc).controllingIndex));
                         }
                         else if (this.parentTank.GetType() == typeof(PlayerTank))
                         {
                             ((PlayerTank)rtc).damage();
                             ScoreManager.Instance.addPoints((int)(((PlayerTank)this.parentTank).controllingIndex),2);
+                            ScoreManager.Instance.addPoints((int)(((PlayerTank)rtc).controllingIndex), -1);
                             ScoreManager.Instance.addDeath((int)(((PlayerTank)rtc).controllingIndex));
                         }
                     } 

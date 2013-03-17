@@ -136,6 +136,8 @@ namespace BattleSiteE.GameObjects.Managers
         {
             foreach (TankBase other in controlledTanks)
             {
+                if (other.spawnState != SpawnState.SPAWNED) continue;
+
                 Rectangle otherMask = other.getCollisionMask();
 
                 if (collisionMask.Intersects(otherMask)) return other;
@@ -148,6 +150,7 @@ namespace BattleSiteE.GameObjects.Managers
             foreach (TankBase other in controlledTanks)
             {
                 if (self == other) continue;
+                if (other.spawnState != SpawnState.SPAWNED) continue;
 
                 Rectangle otherMask = other.getCollisionMask();
                 if (collisionMask.Intersects(otherMask)) return true;

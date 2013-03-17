@@ -23,7 +23,7 @@ namespace BattleSiteE.GameScreens
         static String text = "1. First player to reach 25 points wins! \n"+
                             "2. You get 2 points for killing another player. \n"+
                             "3. You get 1 point for killing a bot.\n"+
-                            "";
+                            "4. Lose 1 point for dying!";
 
         public InstructionsScreen()
         {

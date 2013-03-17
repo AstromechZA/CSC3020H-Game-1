@@ -22,7 +22,7 @@ namespace BattleSiteE.GameScreens
         String[] mainMenuItems = {
                                     "TWO PLAYER",
                                     "FOUR PLAYER",
-                                    "INSTRUCTIONS",
+                                    "RULES",
                                     "EXIT"
                                 };
         int selectedItem = 0;
