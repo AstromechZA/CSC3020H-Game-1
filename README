@@ -1,4 +1,33 @@
 CSC3020H-Game-1
-===============
+==================================
+BATTLE FOR SITE E - A battle tanks clone, written in XNA!
+Author: Ben Meier (MRXBEN001)
+Date: March 2013
+==================================
 
-A battle tanks clone, written in XNA
+Features:
+> 2 game modes! play with against one friend or 3!
+> Multiple respawning AI tanks, roaming the map, shooting semi-intelligently
+> Grid aligned movement and turning
+> Menu system, pause menu's, dialog boxes
+> First player to 25 wins
+
+Extra's:
+> Screen manager with transition effects
+> Custom graphics
+> Sprite animations
+> Endgame score display
+> Adative controls for Xbox and PC
+> Thumbsticks!
+> Sound effects and music!
+> Little graphics effects such as spawn animations and explosions
+> 720p screen display
+
+HOW TO PLAY:
+- Get AMPED
+- Choose your opponents
+- Destroy the AI and other players. It's a death match!
+- First player to 25 wins! Deaths don't matter.
+- Mock the losers!
+
+
