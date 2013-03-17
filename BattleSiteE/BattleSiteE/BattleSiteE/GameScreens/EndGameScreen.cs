@@ -29,7 +29,7 @@ namespace BattleSiteE.GameScreens
             new Rectangle(300,418,100,128)
         };
 
-        private static Rectangle abutton = (Environment.OSVersion.Platform == PlatformID.Win32NT)?new Rectangle(400, 418, 64, 64):new Rectangle(464, 418, 64, 64);
+        private static Rectangle abutton = (Environment.OSVersion.Platform == PlatformID.Win32NT)?new Rectangle(464, 418, 64, 64):new Rectangle(400, 418, 64, 64);
         public EndGameScreen()
         {
             TransitionOnTime = TimeSpan.FromSeconds(0.1);
