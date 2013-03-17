@@ -70,6 +70,7 @@ namespace BattleSiteE.GameObjects.Managers
             points = new int[] { 0, 0, 0, 0 };
             deaths = new int[] { 0, 0, 0, 0 };
             shotsfired = new int[] { 0, 0, 0, 0 };
+            winned = false;
         }
 
         public void setInGameTexture(Texture2D t)
@@ -178,5 +179,22 @@ namespace BattleSiteE.GameObjects.Managers
             this.winningScore = winningScore;
         }
 
+        public int[] getOrderedIds()
+        {
+            return orderedids;
+        }
+
+        public int getPoints(int index)
+        {
+            return points[index];
+        }
+        public int getShots(int index)
+        {
+            return shotsfired[index];
+        }
+        public int getDeaths(int index)
+        {
+            return deaths[index];
+        }
     }
 }

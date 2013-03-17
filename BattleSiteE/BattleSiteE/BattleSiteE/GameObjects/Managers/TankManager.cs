@@ -21,7 +21,13 @@ namespace BattleSiteE.GameObjects.Managers
             }
         }
 
-
+        public static Color[] tankColours = new Color[] { 
+            Color.LightSteelBlue,
+            new Color(1.0f, 0.5f, 0.5f),
+            Color.LightGreen,
+            new Color(1.0f, 1.0f, 0.5f)
+        };
+        
         Texture2D tanktexture;
         List<TankBase> controlledTanks = new List<TankBase>();
 
