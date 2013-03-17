@@ -22,6 +22,7 @@ namespace BattleSiteE.GameScreens
         String[] mainMenuItems = {
                                     "TWO PLAYER",
                                     "FOUR PLAYER",
+                                    "INSTRUCTIONS",
                                     "EXIT"
                                 };
         int selectedItem = 0;
@@ -136,7 +137,11 @@ namespace BattleSiteE.GameScreens
                     ScreenManager.ExitAll();
                     ScreenManager.AddScreen(new GameplayScreen(4, 25));
                 }
-                else if (selectedItem == 2) ScreenManager.AddScreen(new ExitConfirmationScreen());
+                else if (selectedItem == 2)
+                {
+                    ScreenManager.AddScreen(new InstructionsScreen());
+                }
+                else if (selectedItem == 3) ScreenManager.AddScreen(new ExitConfirmationScreen());
             }
 
         }

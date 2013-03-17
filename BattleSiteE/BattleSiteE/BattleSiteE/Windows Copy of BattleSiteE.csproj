@@ -82,6 +82,7 @@
     <Compile Include="GameScreens\EndGameScreen.cs" />
     <Compile Include="GameScreens\ExitConfirmationScreen.cs" />
     <Compile Include="GameScreens\GameplayScreen.cs" />
+    <Compile Include="GameScreens\InstructionsScreen.cs" />
     <Compile Include="GameScreens\MainMenuScreen.cs" />
     <Compile Include="GameScreens\MenuBackgroundScreen.cs" />
     <Compile Include="GameScreens\PauseConfirmationScreen.cs" />

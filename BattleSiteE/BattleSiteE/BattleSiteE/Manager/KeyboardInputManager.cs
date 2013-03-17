@@ -113,7 +113,7 @@ namespace BattleSiteE.Manager
             if (k == GameKey.FIRE)
             {
                 if (player.HasValue && player == PlayerIndex.One) return Keys.Space;
-                if (player.HasValue && player == PlayerIndex.Two) return Keys.NumPad0;
+                if (player.HasValue && player == PlayerIndex.Two) return Keys.RightControl;
                 if (player.HasValue && player == PlayerIndex.Three) return Keys.Enter;
                 if (player.HasValue && player == PlayerIndex.Four) return Keys.OemSemicolon;
                 return Keys.Space;
