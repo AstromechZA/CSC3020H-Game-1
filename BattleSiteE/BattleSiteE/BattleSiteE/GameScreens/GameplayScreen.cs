@@ -24,6 +24,7 @@ namespace BattleSiteE.GameScreens
 
         private bool gameStarted = false;
         private bool gameEnded = false;
+        private bool gamePaused = false;
         private bool firstupdate = true;
 
         private static Rectangle countdown1 = new Rectangle(0, 0, 256, 256);
@@ -56,7 +57,7 @@ namespace BattleSiteE.GameScreens
             BulletManager bm = BulletManager.Instance;
             bm.clear();
 
-            //MusicManager.Instance.startTrack("gamemusic", 1000);
+            MusicManager.Instance.startTrack("gamemusic", 1000);
 
             ScoreManager.Instance.clear();
             ScoreManager.Instance.zeroscores(numberofplayers);
@@ -157,11 +158,8 @@ namespace BattleSiteE.GameScreens
         {
             if (ScreenManager.InputController.isKeyDown(GameKey.BACK, null))
             {
-                ///ScreenManager.AddScreen(new ExitConfirmationScreen());
-                ScreenManager.ExitAll();
-                MusicManager.Instance.stop(3000);
-                ScreenManager.AddScreen(new MenuBackgroundScreen());
-                ScreenManager.AddScreen(new MainMenuScreen());
+                ScreenManager.AddScreen(new PauseConfirmationScreen(this));
+                gamePaused = true;
                 return;
             }
 
@@ -184,7 +182,7 @@ namespace BattleSiteE.GameScreens
                 firstupdate = false;
             }
 
-            if (!gameStarted && !gameEnded)
+            if (!gameStarted && !gameEnded && !gamePaused)
             {
                 if (countdown > 0)
                 {
@@ -203,7 +201,7 @@ namespace BattleSiteE.GameScreens
             {
 
             }
-            else
+            else if (!gamePaused)
             {
                 // NORMAL OPS
 
@@ -224,5 +222,10 @@ namespace BattleSiteE.GameScreens
 
 
 
+
+        public void unpause()
+        {
+            gamePaused = false;
+        }
     }
 }

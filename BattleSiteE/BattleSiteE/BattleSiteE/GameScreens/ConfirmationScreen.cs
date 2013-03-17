@@ -13,7 +13,7 @@ namespace BattleSiteE.GameScreens
     {
         String btnOKtext = "OK";
         String btnCANCELtext = "CANCEL";
-        int selectedindex = 0;
+        int selectedindex = 1;
         String message = "?";
         ContentManager contentMan;
         SpriteFont menuFont;

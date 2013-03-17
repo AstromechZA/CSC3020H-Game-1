@@ -26,7 +26,6 @@ namespace BattleSiteE.GameObjects.Managers
 
         private Texture2D wallTextures;
 
-
         private static Rectangle blank = new Rectangle(32, 32, 32, 32);
 
         private static Rectangle damageRect = new Rectangle(0, 32, 32, 32);

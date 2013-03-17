@@ -129,12 +129,12 @@ namespace BattleSiteE.GameScreens
                 if (selectedItem == 0)
                 {
                     ScreenManager.ExitAll();
-                    ScreenManager.AddScreen(new GameplayScreen(2,2));                    
+                    ScreenManager.AddScreen(new GameplayScreen(2,25));                    
                 }
                 else if (selectedItem == 1)
                 {
                     ScreenManager.ExitAll();
-                    ScreenManager.AddScreen(new GameplayScreen(4, 2));
+                    ScreenManager.AddScreen(new GameplayScreen(4, 25));
                 }
                 else if (selectedItem == 2) ScreenManager.AddScreen(new ExitConfirmationScreen());
             }
