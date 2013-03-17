@@ -10,6 +10,7 @@ namespace BattleSiteE.GameObjects.Managers
 {
     public class BulletManager
     {
+        // SINGLETON
         private static BulletManager instance;
         public static BulletManager Instance
         {
@@ -20,6 +21,7 @@ namespace BattleSiteE.GameObjects.Managers
             }
         }
 
+        // all bullets in the game
         private List<Bullet> bullets;
         private Texture2D bulletTex;
         private Texture2D explosionTex;
@@ -34,7 +36,7 @@ namespace BattleSiteE.GameObjects.Managers
         public void addBullet(Bullet p)
         {
             fireSound.Play(0.2f, 0.0f, 0.0f);
-            p.setTextures(bulletTex, explosionTex);
+            p.setTextures(bulletTex, explosionTex);         // set preloaded textures
             bullets.Add(p);
         }
 
@@ -46,7 +48,7 @@ namespace BattleSiteE.GameObjects.Managers
 
         public void updateBullets(GameTime gametime)
         {
-
+            // for each bullet: update: remove if dead
             for (int i = 0; i < bullets.Count; i++)
             {
                 bullets[i].Update(gametime);
@@ -60,6 +62,7 @@ namespace BattleSiteE.GameObjects.Managers
 
         public Bullet getCollidingBullet(Rectangle r)
         {
+            // get any bullet that collides with the given rectangle
             foreach (Bullet b in bullets)
             {
                 Rectangle other = b.getCollisionMask();
@@ -68,6 +71,7 @@ namespace BattleSiteE.GameObjects.Managers
             return null;
         }
 
+        // Draw all the bullet
         public void drawBullets(SpriteBatch sb)
         {
             foreach (Bullet b in bullets)
@@ -76,10 +80,12 @@ namespace BattleSiteE.GameObjects.Managers
             }
         }
 
+        // Get any bullet that is colliding with a rectangle and is not this bullet
         public Bullet getCollidingBulletWithBullet(Rectangle r, Bullet bullet)
         {
             foreach (Bullet b in bullets)
             {
+                // if this, ignore
                 if (bullet == b) continue;
                 Rectangle other = b.getCollisionMask();
                 if (other.Intersects(r)) return b;
@@ -87,7 +93,8 @@ namespace BattleSiteE.GameObjects.Managers
             return null;
         }
 
-        internal void clear()
+        // reinit
+        public void clear()
         {
             instance = new BulletManager();
         }

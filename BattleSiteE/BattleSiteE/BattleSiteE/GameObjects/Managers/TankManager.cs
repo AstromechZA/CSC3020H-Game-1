@@ -11,6 +11,7 @@ namespace BattleSiteE.GameObjects.Managers
 {
     public class TankManager
     {
+        // SINGLETON
         private static TankManager instance;
         public static TankManager Instance
         {
@@ -21,6 +22,7 @@ namespace BattleSiteE.GameObjects.Managers
             }
         }
 
+        // tank colour array
         public static Color[] tankColours = new Color[] { 
             Color.LightSteelBlue,
             new Color(1.0f, 0.5f, 0.5f),
@@ -64,16 +66,20 @@ namespace BattleSiteE.GameObjects.Managers
             return controlledTanks;
         }
 
+        // THE MAIN UPDATE LOOOOOOOOOOOP for tanks
         public void updateTanks(GameTime gametime)
         {
 
+            
             for (int i = 0; i < controlledTanks.Count; i++)
             {
                 TankBase tb = controlledTanks[i];
-                tb.Update(gametime);
+                tb.Update(gametime);    //  !!!!!!!
 
+                // if time to die
                 if (tb.markedForDeletion)
                 {
+                    // handle respawn differently dependign on type
                     if (tb.GetType() == typeof(AITank))
                     {
                         controlledTanks.Remove(controlledTanks[i]);
@@ -81,26 +87,28 @@ namespace BattleSiteE.GameObjects.Managers
                     }
                     else
                     {
-                        playerTanksToBeRespawned.Add(((PlayerTank)tb).controllingIndex);
-                        
+                        playerTanksToBeRespawned.Add(((PlayerTank)tb).controllingIndex);                        
                         controlledTanks.Remove(tb);
                     }
                 }
 
             }
 
+            // WHILE we still need to spawn some AI
             while (aiTankQueue > 0)
             {
                 int i = random.Next(0, spawnPoints.Count);
                 Point p = spawnPoints[i];
-                Rectangle rect = new Rectangle(p.X, p.Y, 64, 64);
+                Rectangle rect = new Rectangle(p.X, p.Y, 64, 64);   // collision probe
 
-                if (getCollidingTank(rect) != null) continue;
+                if (getCollidingTank(rect) != null) continue;       // try again if collision probe failed
 
                 addTank(new AITank(p.X+32,p.Y+32));
                 aiTankQueue--;
             }
 
+
+            // RESPAWN players
             while (playerTanksToBeRespawned.Count > 0)
             {
                 Debug.WriteLine("player must be spawned!");
@@ -112,13 +120,8 @@ namespace BattleSiteE.GameObjects.Managers
 
                 PlayerIndex pi = playerTanksToBeRespawned[0];
 
-                Color c;
-                if (pi == PlayerIndex.One) c = Color.LightSteelBlue;
-                else if (pi == PlayerIndex.Two) c = new Color(1.0f, 0.5f, 0.5f);
-                else if (pi == PlayerIndex.Three) c = Color.LightGreen;
-                else c = new Color(1.0f, 1.0f, 0.5f);
 
-                PlayerTank pt = new PlayerTank(c, p.X + 32, p.Y + 32, Bearing.EAST, pi);
+                PlayerTank pt = new PlayerTank(tankColours[(int)pi], p.X + 32, p.Y + 32, Bearing.EAST, pi);
                 addTank(pt);
                 playerTanksToBeRespawned.RemoveAt(0);
             }
@@ -128,6 +131,7 @@ namespace BattleSiteE.GameObjects.Managers
 
         }
 
+        // GET any tank that collides with the given rectangle
         public TankBase getCollidingTank(Rectangle collisionMask)
         {
             foreach (TankBase other in controlledTanks)
@@ -138,7 +142,7 @@ namespace BattleSiteE.GameObjects.Managers
             }
             return null;
         }
-
+        // GET any tank that collides with the given rectangle AND is not == self
         public bool tankCollisionWithTank(Rectangle collisionMask, TankBase self)
         {
             foreach (TankBase other in controlledTanks)
@@ -156,8 +160,10 @@ namespace BattleSiteE.GameObjects.Managers
             instance = new TankManager();
         }
 
+        // READ THE MAP texture for spawn locations
         public void loadSpawnPoints(Texture2D t)
         {
+            // convert 1d array into 2d array
             Color[] color1D = new Color[t.Width * t.Height];
             t.GetData(color1D);
 
@@ -176,6 +182,7 @@ namespace BattleSiteE.GameObjects.Managers
             {
                 for (int x = 0; x < mx; x++)
                 {
+                    // ANY RED pixels are spawn locations
                     if (colors2D[y, x] == Color.Red)
                     {
                         spawnPoints.Add(new Point(x * 32, y * 32));

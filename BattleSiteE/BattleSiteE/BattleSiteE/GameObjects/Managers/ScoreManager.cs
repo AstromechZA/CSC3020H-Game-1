@@ -132,8 +132,10 @@ namespace BattleSiteE.GameObjects.Managers
             sb.Draw(textureInGame, new Microsoft.Xna.Framework.Rectangle(1280 - 128, 0, 128, 50), header, Color.White);
         }
 
+        // SWAP sort
         public void movei(int[] unsorted, int root)
         {
+            // done
             if (root >= 3) return;
 
             for (int i = root+1; i < orderedids.Length; i++)
@@ -156,6 +158,7 @@ namespace BattleSiteE.GameObjects.Managers
             }
         }
 
+        // swap sort on each number
         public void sorti(int[] unsorted)
         {
             for (int i = 0; i < 3; i++)
@@ -165,12 +168,12 @@ namespace BattleSiteE.GameObjects.Managers
         }
 
 
-
-        public void zeroscores(int ps)
+        // create orderids for N player
+        public void zeroscores(int n)
         {
-            if (ps == 1) orderedids = new int[] {0 };
-            else if (ps == 2) orderedids = new int[] { 0, 1 };
-            else if (ps == 3) orderedids = new int[] { 0,1,2 };
+            if (n == 1) orderedids = new int[] {0 };
+            else if (n == 2) orderedids = new int[] { 0, 1 };
+            else if (n == 3) orderedids = new int[] { 0,1,2 };
             else orderedids = new int[] { 0,1,2,3 };
         }
 

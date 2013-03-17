@@ -14,9 +14,6 @@ using BattleSiteE.Manager;
 
 namespace BattleSiteE
 {
-    /// <summary>
-    /// This is the main type for your game
-    /// </summary>
     public class Game1 : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
@@ -26,18 +23,20 @@ namespace BattleSiteE
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+            // 720p
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
             
-            //graphics.SynchronizeWithVerticalRetrace = false;
             IsFixedTimeStep = false;
 
             Content.RootDirectory = "Content";
 
+            // CREATE Screen manager component
             screenManager = new ScreenManager(this);
 
-            Components.Add(screenManager);
+            Components.Add(screenManager); 
 
+            // Add main menu screens
             screenManager.AddScreen(new MenuBackgroundScreen());
             screenManager.AddScreen(new MainMenuScreen());
 

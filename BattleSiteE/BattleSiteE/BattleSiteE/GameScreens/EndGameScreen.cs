@@ -90,7 +90,6 @@ namespace BattleSiteE.GameScreens
             }
 
             sb.Draw(screenTex, new Rectangle(panelR.X + 456, panelR.Y+5, 100, 128), pnums[ids[0]], Color.White);
-
             sb.Draw(screenTex, new Rectangle(panelR.X + 685, panelR.Y + 340, 64, 64), abutton, Color.White);
 
             sb.End();

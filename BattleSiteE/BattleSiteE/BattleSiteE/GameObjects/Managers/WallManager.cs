@@ -14,6 +14,7 @@ namespace BattleSiteE.GameObjects.Managers
 
     public class WallManager
     {
+        // SINGLETON
         private static WallManager instance;
         public static WallManager Instance
         {
@@ -40,10 +41,12 @@ namespace BattleSiteE.GameObjects.Managers
 
         }
 
+        // READ TEXTURE and find out where to put them walls
         public void makeWalls(Texture2D t)
         {
             wallmap = new WallBase[t.Height, t.Width];
 
+            // convert 1d array into 2d
             Color[] color1D = new Color[t.Width * t.Height];
             t.GetData(color1D);
 
@@ -63,10 +66,12 @@ namespace BattleSiteE.GameObjects.Managers
             {
                 for (int x = 0; x < mx; x++)
                 {
+                    // solid walls (unbreakable)
                     if (colors2D[y, x] == Color.Black)
                     {
                         wallmap[y, x] = new WallPermanent();
                     }
+                    // breakable walls
                     else if (colors2D[y, x] == Color.Gray)
                     {
                         wallmap[y, x] = new WallDamageable();
@@ -96,7 +101,7 @@ namespace BattleSiteE.GameObjects.Managers
             return (wallmap[c.Y, c.X] != null);
         }
 
-        
+        // DOES the given rectangle collide with any blocks
         public bool collides(Rectangle r)
         {
             Point tl = gridIndex(r.Left, r.Top);
@@ -115,6 +120,7 @@ namespace BattleSiteE.GameObjects.Managers
             int ex = (int)MathHelper.Clamp(br.X, 0, wallmap.GetLength(1)-1);
             int ey = (int)MathHelper.Clamp(br.Y, 0, wallmap.GetLength(0)-1);
 
+            // loop
             for (int y = sy; y <= ey; y++)
             {
                 for (int x = sx; x <= ex; x++)
